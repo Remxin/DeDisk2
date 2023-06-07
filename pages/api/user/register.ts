@@ -1,5 +1,6 @@
 import { hashHelpers } from '@/helpers/data/hashHelpers'
 import { signToken } from '@/helpers/data/token'
+import { createUserHomeDir } from '@/helpers/fs/dir'
 import prisma from '@/lib/prisma'
 import { serialize } from 'cookie'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -37,7 +38,7 @@ export default async function handler(
 
         const user = await prisma.user.create({ data: { name, email, password: hashedPass } })
         const token = signToken({ id: user.id }, "user", "5d")
-        console.log(token)
+        await createUserHomeDir(user.id)
         const cookie = serialize("user-token", token, { httpOnly: true })
 
         res.setHeader("Set-Cookie", cookie)
