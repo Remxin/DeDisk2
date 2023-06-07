@@ -1,0 +1,24 @@
+### POST
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+    "name": "Dawid",
+    "email": "remxin7@gmail.com",
+    "password": "123456Q!"
+}
+
+### POST
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "email": "remxin7@gmail.com",
+    "password": "123456Q!"
+}
+
+### POST
+POST http://localhost:3000/api/user/verify
+
+### DELETE
+DELETE http://localhost:3000/api/user
