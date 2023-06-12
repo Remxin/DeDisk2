@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 20px;
+    /* width: 80px; */
+    background-color: #3D2C8D22;
+}
+
+.arrow_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #34077b44;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    transition: .3s all;
+    font-size: 20px;
+}
+
+.arrow_button:hover {
+    background-color: #34077b66
+}
+
+.options_container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    gap: 4px;
+}
+
+.options_container button {
+    border: none;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.options_container button:hover {
+    background-color: #aaa;
+}
