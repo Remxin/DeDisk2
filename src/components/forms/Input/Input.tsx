@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, Dispatch, MutableRefObject, LegacyRef } from 'react'
+import React, { forwardRef, useState, Dispatch, useEffect } from 'react'
 
 // styles
 import inputStyles from "./Input.module.css"
@@ -18,6 +18,11 @@ const Input = React.forwardRef<HTMLInputElement, componentProps>(({ style, input
     const [success, setSuccess] = useState(false)
     const [active, setActive] = useState(false)
 
+    useEffect(() => {
+        setError(parentError)
+    }, [parentError])
+
+
     let behaviorColor = "gray"
     if (error) behaviorColor = "red"
     else if (success) behaviorColor = "green"
@@ -27,12 +32,9 @@ const Input = React.forwardRef<HTMLInputElement, componentProps>(({ style, input
         setSuccess(false)
         const text = e.target.value
         let blurError = ""
-        // if (text) setActive(false)
         if (validationFunction) {
             blurError = validationFunction(text)
         }
-
-        console.log(blurError)
 
         if (!blurError) setSuccess(true)
         else {
@@ -52,7 +54,7 @@ const Input = React.forwardRef<HTMLInputElement, componentProps>(({ style, input
 
 
     return (
-        <div className={inputStyles.input_container} style={{ marginBottom: error ? 26 : 0 }}>
+        <div className={inputStyles.input_container} style={{ marginBottom: error ? 42 : 0 }}>
             {active ? <p className={inputStyles.active_placeholder_text}>{placeholder}</p> : null}
             <input className={inputStyles.input} ref={ref} placeholder={placeholder} onBlur={handleBlur} onInput={handleInput} style={{ borderColor: behaviorColor }} type={secure ? "password" : "text"} />
             {error ? <p className={inputStyles.error_text}>{error}</p> : null}

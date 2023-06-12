@@ -5,7 +5,7 @@ Content-Type: application/json
 {
     "name": "Dawid",
     "email": "remxin7@gmail.com",
-    "password": "123456Q!"
+    "password": "zaq1@WSX"
 }
 
 ### POST
@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
     "email": "remxin7@gmail.com",
-    "password": "123456Q!"
+    "password": "zaq1@WSX"
 }
 
 ### POST

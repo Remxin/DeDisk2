@@ -15,6 +15,7 @@ type Data = {
         email: string
         name: string
         plan: string
+        usedSpace: string
     }
 }
 
@@ -30,21 +31,18 @@ export default async function handler(
     if (req.method !== "POST") return res.status(405).send({ error: { server: "Wrong method" } })
     const { email, password } = req.body as Body
 
-
-
-
     try {
         const user = await prisma.user.findUnique({ where: { email } })
         if (!user) return res.status(404).send({ error: { email: "User not found" } })
-        const validPass = hashHelpers.comparePass(user.password, password)
-
-        if (!validPass) return res.status(401).send({ error: { password: "Wrong password" } })
+        const validPass = await hashHelpers.comparePass(user.password, password)
+        console.log(console.log(password))
+        if (!validPass.res) return res.status(401).send({ error: { password: "Wrong password" } })
 
         const token = signToken({ id: user.id }, "user", "5d")
         const cookie = serialize("user-token", token, { httpOnly: true })
 
         res.setHeader("Set-Cookie", cookie)
-        return res.status(200).send({ user: { name: user.name, email, id: user.id, plan: user.plan } })
+        return res.status(200).send({ user: { name: user.name, email, id: user.id, plan: user.plan, usedSpace: user.usedSpace } })
     } catch (err) {
         return res.status(500).send({ error: { server: "Unexpected server error" } })
     }

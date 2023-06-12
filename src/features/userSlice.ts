@@ -8,6 +8,11 @@ type userRegisterData = {
     email: string
     password: string
 }
+
+type userLoginData = {
+    email: string
+    password: string
+}
 // actions
 export const registerUser = createAsyncThunk(
     "user/register",
@@ -27,6 +32,33 @@ export const registerUser = createAsyncThunk(
             if (resData.error) {
                 return rejectWithValue(resData.error?.server)
             }
+            return resData.user
+        } catch (err) {
+            return rejectWithValue("")
+        }
+    }
+)
+
+export const loginUser = createAsyncThunk(
+    "user/login",
+    async ({ email, password }: userLoginData, { rejectWithValue }) => {
+        try {
+            const config = {
+                method: "POST",
+                body: JSON.stringify({ email, password }),
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            }
+            //@ts-ignore
+            const res = await fetch(`${appConstants.serverUrl}/api/user/login`, config)
+            const resData = await res.json()
+
+            if (resData.error?.password) return rejectWithValue(resData.error.password)
+            else if (resData.error?.email) return rejectWithValue(resData.error.email)
+            else if (resData.error?.server) return rejectWithValue(resData.error.server)
+
             return resData.user
         } catch (err) {
             return rejectWithValue("")
@@ -73,10 +105,11 @@ const userSlice = createSlice({
         builder.addCase(registerUser.pending, (state, action) => {
             state.success = false
             state.loading = true
-            state.error = null
+            state.error = ""
         })
 
         builder.addCase(registerUser.fulfilled, (state, { payload }) => {
+            console.log(payload)
             state.loading = false
             state.success = true
             state.id = payload.id
@@ -87,6 +120,27 @@ const userSlice = createSlice({
         })
 
         builder.addCase(registerUser.rejected, (state, { payload }) => {
+            state.loading = false
+            state.error = payload
+        })
+
+        builder.addCase(loginUser.pending, (state, action) => {
+            state.success = false
+            state.loading = true
+            state.error = ""
+        })
+
+        builder.addCase(loginUser.fulfilled, (state, { payload }) => {
+            state.loading = false
+            state.success = true
+            state.id = payload.id
+            state.name = payload.name
+            state.email = payload.email
+            state.plan = payload.plan
+            state.usedSpace = payload.usedSpace
+        })
+
+        builder.addCase(loginUser.rejected, (state, { payload }) => {
             state.loading = false
             state.error = payload
         })
