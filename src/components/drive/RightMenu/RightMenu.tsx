@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react'
 
 // components
 import { BsArrowRightCircle, BsPlusSquareFill } from "react-icons/bs"
+import FreeSpace from '../FreeSpace/FreeSpace'
+import Button from '../../forms/Button/Button'
 
 // styles
 import styles from "./RightMenu.module.css"
@@ -57,6 +59,18 @@ const optionVariants = {
     }
 }
 
+const buttonVariants = {
+    initial: {
+        opacity: 0
+    },
+    animate: {
+        opacity: 1,
+        transition: {
+            delay: .5
+        }
+    }
+}
+
 const RightMenu = () => {
     const menuControlls = useAnimationControls()
     const arrowControlls = useAnimationControls()
@@ -83,13 +97,17 @@ const RightMenu = () => {
             </motion.button>
             {extended ? (
                 <>
-                    <motion.button variants={optionVariants} initial="initial" animate="animate">
+                    <motion.button variants={optionVariants} initial="initial" animate="animate" className={styles.new_button}>
                         <BsPlusSquareFill /> New
                     </motion.button>
                     <motion.div variants={optionsListVariants} initial="initial" animate="animate" className={styles.options_container}>
                         <motion.button style={{ backgroundColor: selected === "My drive" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("My drive")}>My drive</motion.button>
                         <motion.button style={{ backgroundColor: selected === "Last" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Last")}>Last</motion.button>
                         <motion.button style={{ backgroundColor: selected === "Shared to me" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Shared to me")}>Shared to me</motion.button>
+                    </motion.div>
+                    <FreeSpace plan="15_GB" usedSpace='5_GB' />
+                    <motion.div variants={buttonVariants} initial="initial" animate="animate">
+                        <Button text="Change Plan" onClick={() => console.log("change plan")} />
                     </motion.div>
                 </>
             )

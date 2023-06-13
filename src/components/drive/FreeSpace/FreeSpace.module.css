@@ -1,0 +1,46 @@
+.space_container {
+    width: 100%;
+    padding-top: 50px;
+    margin-bottom: 30px;
+}
+
+.index_container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 20px;
+}
+
+.text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.text svg {
+    margin-right: 10px;
+}
+
+.all_space {
+    position: relative;
+    width: 80%;
+    height: 8px;
+    background-color: #bbb;
+    border-radius: 2px;
+}
+
+.used_space {
+    height: 100%;
+    width: 50px;
+    background-color: #3D2C8D;
+    border-radius: 2px;
+}
+
+.information {
+    width: 100%;
+    text-align: center;
+}

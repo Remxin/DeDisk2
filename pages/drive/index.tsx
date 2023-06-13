@@ -8,6 +8,7 @@ import RightMenu from '@/src/components/drive/RightMenu/RightMenu'
 import styles from "@/styles/drive/Drive.module.css"
 
 const Path = () => {
+
     return (
         <>
             <Navbar />
