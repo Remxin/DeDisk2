@@ -4,6 +4,9 @@ import React, { useState, useContext } from 'react'
 import { BsArrowRightCircle, BsPlusSquareFill } from "react-icons/bs"
 import FreeSpace from '../FreeSpace/FreeSpace'
 import Button from '../../forms/Button/Button'
+import Modal from '../../modals/Modal/Modal'
+import PlanCard from '../PlanCard/PlanCard'
+import CreateMenu from '../CreateMenu/CreateMenu'
 
 // styles
 import styles from "./RightMenu.module.css"
@@ -74,9 +77,11 @@ const buttonVariants = {
 const RightMenu = () => {
     const menuControlls = useAnimationControls()
     const arrowControlls = useAnimationControls()
-    const [selected, setSelected] = useState("My drive")
 
+    const [selected, setSelected] = useState("My drive")
     const [extended, setExtended] = useState(false)
+    const [showNew, setShowNew] = useState(false)
+    const [showChoosePlan, setShowChoosePlan] = useState(false)
 
     function manageSize() {
         if (extended) {
@@ -97,9 +102,12 @@ const RightMenu = () => {
             </motion.button>
             {extended ? (
                 <>
-                    <motion.button variants={optionVariants} initial="initial" animate="animate" className={styles.new_button}>
-                        <BsPlusSquareFill /> New
-                    </motion.button>
+                    <div className={styles.new_button_container}>
+                        <motion.button variants={optionVariants} initial="initial" animate="animate" className={styles.new_button} onClick={() => setShowNew(true)}>
+                            <BsPlusSquareFill /> New
+                        </motion.button>
+                        <CreateMenu visible={showNew} setVisible={setShowNew} />
+                    </div>
                     <motion.div variants={optionsListVariants} initial="initial" animate="animate" className={styles.options_container}>
                         <motion.button style={{ backgroundColor: selected === "My drive" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("My drive")}>My drive</motion.button>
                         <motion.button style={{ backgroundColor: selected === "Last" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Last")}>Last</motion.button>
@@ -107,11 +115,19 @@ const RightMenu = () => {
                     </motion.div>
                     <FreeSpace plan="15_GB" usedSpace='5_GB' />
                     <motion.div variants={buttonVariants} initial="initial" animate="animate">
-                        <Button text="Change Plan" onClick={() => console.log("change plan")} />
+                        <Button text="Change Plan" onClick={() => setShowChoosePlan(true)} />
                     </motion.div>
                 </>
             )
                 : null}
+            <Modal visible={showChoosePlan} setVisible={setShowChoosePlan}>
+                <h2>Choose plan </h2>
+                <div className={styles.plan_cards}>
+                    <PlanCard plan="15GB" price="10zł" />
+                    <PlanCard plan="50GB" price="25zł" />
+                    <PlanCard plan="100GB" price="35zł" />
+                </div>
+            </Modal>
         </motion.div>
     )
 }

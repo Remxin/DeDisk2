@@ -45,6 +45,14 @@
     box-shadow: 0 0 5px 2px #34077b66;
 }
 
+.new_button_container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
 .new_button {
     display: flex;
     align-items: center;
@@ -64,4 +72,13 @@
 
 .new_button:hover {
     background-color: #eef;
+}
+
+.plan_cards {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
 }
