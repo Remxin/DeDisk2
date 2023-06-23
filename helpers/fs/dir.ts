@@ -1,5 +1,6 @@
 import path from "path"
 import fs from "fs"
+import { AleradyExistError } from "./errors"
 
 
 
@@ -21,12 +22,13 @@ export function createUserDir(userId: string, pathName: string) {
     return new Promise((resolve, reject) => {
         try {
             const dirPath = path.join("serverFiles", "folders", userId, pathName)
-            if (fs.existsSync(dirPath)) throw new Error("This folder already exist")
-
+            const exist = fs.existsSync(dirPath)
+            if (exist) throw new AleradyExistError("This folder already exist")
+          
             fs.mkdirSync(dirPath)
             resolve(dirPath)
         } catch (err) {
-            throw new Error("Unexpected server error")
+            reject(err)
         }
     })
 }
@@ -43,7 +45,7 @@ export function listDir(userId: string, pathName: string) {
             } 
             //listing all files using forEach
             const returnFiles = files.map((file) => {
-                return { name: file.name, isDirectory: file.isDirectory()}
+                return { name: file.name, type: file.isDirectory() ? "folder": "file"}
             })
 
             resolve(returnFiles)

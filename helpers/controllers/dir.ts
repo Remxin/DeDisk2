@@ -7,17 +7,19 @@ import { getLastUrlPart } from "../data/links";
 export const dirControllers = {
     createDir: async (req: NextApiRequest, res: NextApiResponse) => {
         const token = cookieValidations.verifyUser(req)
-        const { pathName } = req.body as { pathName: string }
+        const { pathName } = JSON.parse(req.body) as { pathName: string }
 
         if (token.error) return res.status(403).send(token.error)
 
         try {
             const dirPath = await createUserDir(token.data.id, pathName)
+            
             if (!dirPath) return res.status(500).send({ error: { server: "Unknown server error" } })
 
             return res.status(200).send({ path: dirPath })
         } catch (err) {
-            return res.status(500).send({ error: { server: "Unknown server error" } })
+            //@ts-ignore
+            return res.status(500).send({ error: { server: err?.message } })
         }
     },
 

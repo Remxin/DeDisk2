@@ -74,6 +74,7 @@ const buttonVariants = {
     }
 }
 
+
 const RightMenu = () => {
     const menuControlls = useAnimationControls()
     const arrowControlls = useAnimationControls()
