@@ -7,8 +7,11 @@ import RightMenu from '@/src/components/drive/RightMenu/RightMenu'
 // styles
 import styles from "@/styles/drive/Drive.module.css"
 
-const Path = () => {
+// hooks
+import { useDrive } from '@/src/hooks/useDrive'
 
+const Path = () => {
+    const {} = useDrive()
     return (
         <>
             <Navbar />

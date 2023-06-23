@@ -1,3 +1,4 @@
+import { calculateSeconds } from '@/helpers/data/date'
 import { hashHelpers } from '@/helpers/data/hashHelpers'
 import { signToken } from '@/helpers/data/token'
 import { createUserHomeDir } from '@/helpers/fs/dir'
@@ -41,7 +42,7 @@ export default async function handler(
         // console.log(name, email, password, hashedPass) 
         const token = signToken({ id: user.id }, "user", "5d")
         await createUserHomeDir(user.id)
-        const cookie = serialize("user-token", token, { httpOnly: true })
+        const cookie = serialize("userToken", token, { path: "/", maxAge: calculateSeconds("days", 5)})
 
         res.setHeader("Set-Cookie", cookie)
         return res.status(200).send({ user: { name, email, id: user.id, plan: user.plan, usedSpace: user.usedSpace } })

@@ -33,6 +33,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method === "POST") return dirControllers.createDir(req, res)
+    else if (req.method === "GET") return dirControllers.listDirContent(req, res)
 
 
 }

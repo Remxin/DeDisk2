@@ -21,7 +21,6 @@ function getTokenSecret(tokenType: TokenType) {
 
 export function signToken(payload: any, tokenType: TokenType, expiresIn: string) {
     let tokenSecret = getTokenSecret(tokenType)
-    console.log(payload)
     const token = jwt.sign(payload, tokenSecret, { expiresIn })
 
     return token
@@ -30,6 +29,5 @@ export function signToken(payload: any, tokenType: TokenType, expiresIn: string)
 export function verifyToken(token: string, tokenType: TokenType) {
     let tokenSecret = getTokenSecret(tokenType)
     const valid = jwt.verify(token, tokenSecret)
-
     return valid
 }

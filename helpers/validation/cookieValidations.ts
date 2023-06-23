@@ -3,7 +3,7 @@ import { verifyToken } from "../data/token";
 
 export const cookieValidations = {
     verifyUser: (req: NextApiRequest) => {
-        const token = req.cookies['user-token']
+        const token = req.cookies['userToken']
         if (!token) return { error: { user: "no cookie provided" } }
 
         const { id } = verifyToken(token, "user") as { id: string }

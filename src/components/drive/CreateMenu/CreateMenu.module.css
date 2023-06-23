@@ -11,7 +11,7 @@
     position: absolute;
     top: 60px;
     z-index: 2;
-    background-color: #fff;
+    background-color: #eef;
     width: 120px;
     height: 80px;
 
@@ -27,5 +27,14 @@
 }
 
 .container ul li {
-    text-align: center;
+    /* text-align: center; */
+    background-color: #eef;
+    padding-left: 10px;
+    cursor: pointer;
+    transition: .3s all;
+}
+
+.container ul li:hover {
+    cursor: pointer;
+    background-color: #fff;
 }
