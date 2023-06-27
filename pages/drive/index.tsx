@@ -1,5 +1,4 @@
 import Navbar from '@/src/layout/Navbar/Navbar'
-import React, {  } from 'react'
 
 // components
 import RightMenu from '@/src/components/drive/RightMenu/RightMenu'
@@ -11,21 +10,20 @@ import styles from "@/styles/drive/Drive.module.css"
 // hooks
 import { useDrive } from '@/src/hooks/useDrive'
 
+// context
+import DriveContextProvider from '@/src/contexts/DriveContext'
+
 
 const Path = () => {
 
-    const { data, dispatch } = useDrive()
-
-
     return (
-        // @ts-ignor
-        <>
+        <DriveContextProvider>
             <Navbar />
             <div className={styles.drive}>
                 <RightMenu />
-                <FolderContent content={data.data.folderContent}/>
+                <FolderContent/>
             </div>
-        </>
+        </DriveContextProvider>
     )
 }
 

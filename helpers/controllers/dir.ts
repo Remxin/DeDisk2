@@ -8,9 +8,9 @@ export const dirControllers = {
     createDir: async (req: NextApiRequest, res: NextApiResponse) => {
         const token = cookieValidations.verifyUser(req)
         const { pathName } = JSON.parse(req.body) as { pathName: string }
-
+        
         if (token.error) return res.status(403).send(token.error)
-
+        
         try {
             const dirPath = await createUserDir(token.data.id, pathName)
             

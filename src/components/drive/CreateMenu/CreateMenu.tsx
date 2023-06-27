@@ -1,4 +1,10 @@
-import React, { Dispatch } from 'react'
+import React, { Dispatch, useContext, useState } from 'react'
+
+// components
+import Modal from '../../modals/Modal/Modal'
+
+// context
+import { DriveContext } from '@/src/contexts/DriveContext'
 
 import styles from "./CreateMenu.module.css"
 type componentProps = {
@@ -8,6 +14,14 @@ type componentProps = {
 
 
 const CreateMenu = ({ visible, setVisible }: componentProps) => {
+    //@ts-ignore
+    const { dispatch, setCreateFolder, data } = useContext(DriveContext)
+
+    function handleCreation() {
+        setCreateFolder(true)
+        setVisible(false)
+    }
+   
     if (!visible) return <></>
     return (
         <>
@@ -15,7 +29,7 @@ const CreateMenu = ({ visible, setVisible }: componentProps) => {
             </div>
             <div className={styles.container}>
                 <ul>
-                    <li>Create folder</li>
+                    <li onClick={handleCreation}>Create folder</li>
                     <hr />
                     <li>Send file</li>
                     <li>Send Folder</li>

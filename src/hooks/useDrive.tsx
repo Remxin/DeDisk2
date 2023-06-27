@@ -12,7 +12,7 @@ type SetLoading = { type: "setLoading", payload?: null}
 
 export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading
 
-interface stateType {
+export interface stateType {
     data: {
 
         currentFolder: string
@@ -27,7 +27,7 @@ interface structureType {
     type: "folder" | "file"
 }
 
-const initialState: stateType = {
+export const initialState: stateType = {
     data: {
         currentFolder: "",
         folderContent: []
@@ -62,7 +62,7 @@ function driveReducer(state: stateType, action: ActionType) {
 export function useDrive() {
     const [state, dispatch] = useReducer(driveReducer, initialState)
 
-    const customDispatch = useCallback(async (action: ActionType) => {
+    async function cDisptatch (action: ActionType) {
         let res = null
         let resData = null
         switch(action.type) {
@@ -84,10 +84,13 @@ export function useDrive() {
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error.server })
                 resData = await res.json()
-                dispatch({ type: "createDir", payload: resData.path})
+                console.log('raz')
+                dispatch({ type: "createDir", payload: resData.path.split("/").pop()})
                 break
         }
-    }, [])
+    }
+
+    const customDispatch = useCallback(cDisptatch, [])
 
     useEffect(() => {
         customDispatch({ type: "move", payload: "/"})
