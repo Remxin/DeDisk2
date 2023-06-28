@@ -45,6 +45,7 @@ function driveReducer(state: stateType, action: ActionType) {
             state.loading = false
             return { ...state }
         case "createDir":
+            if(state.data.folderContent.some((e) => e.name === action.payload)) return { ...state } // ! to prevent calling twice
             state.data.folderContent.push({ name: action.payload, type: "folder"})
             return { ...state }
         case "setLoading":
@@ -84,7 +85,6 @@ export function useDrive() {
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error.server })
                 resData = await res.json()
-                console.log('raz')
                 dispatch({ type: "createDir", payload: resData.path.split("/").pop()})
                 break
         }

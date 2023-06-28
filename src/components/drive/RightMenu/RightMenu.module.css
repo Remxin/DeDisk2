@@ -34,15 +34,22 @@
 }
 
 .options_container button {
+    display: flex;
+    align-items: center;
     border: none;
     height: 30px;
     border-radius: 4px;
     cursor: pointer;
     transition: .3s all;
+    padding-left: 10px;
 }
 
 .options_container button:hover {
     box-shadow: 0 0 5px 2px #34077b66;
+}
+
+.options_container button svg {
+    margin-right: 5px;
 }
 
 .new_button_container {

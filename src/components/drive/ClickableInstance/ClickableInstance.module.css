@@ -1,0 +1,20 @@
+.element {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding-left: 10px;
+    border-bottom: 1px solid #448;
+    background-color: #eef;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: .3s all;
+}
+
+.element:hover {
+    background-color: #aae;
+}
+
+.element svg {
+    margin-right: 5px;
+}

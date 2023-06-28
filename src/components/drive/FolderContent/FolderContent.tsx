@@ -1,5 +1,10 @@
 import { MutableRefObject, useContext, useEffect, useRef } from 'react'
+
+// icons
 import { BiSolidFolder } from "react-icons/bi"
+
+// components
+import ClickableInstance from '../ClickableInstance/ClickableInstance'
 
 // context
 import { DriveContext } from '@/src/contexts/DriveContext'
@@ -16,7 +21,6 @@ import { getFileIcon } from './helpers'
 const FolderContent = () => {
   const { createFolder, setCreateFolder, data, dispatch } = useContext(DriveContext)
   const content = data.data.folderContent
-  console.log(data)
   const folderInputRef = useRef() as MutableRefObject<HTMLInputElement>
 
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
@@ -39,8 +43,8 @@ const FolderContent = () => {
   return (
     <div className={styles.container}>
         <ul className={styles.element_list}>
-        {content.map((c) => (
-            <li className={styles.element} key={Math.random()* 55}>{c.type === "folder" ? <BiSolidFolder/> : getFileIcon(c.name)} {c.name}</li>
+        {content.map((c, i) => (
+           <ClickableInstance name={c.name} type={c.type} key={i}/>
         ))}
         {createFolder ? <li className={styles.element}> <BiSolidFolder/><input placeholder='Folder name' ref={folderInputRef} onBlur={handleBlur} onKeyDown={handleKeyEnter}/></li> : null}
         </ul>

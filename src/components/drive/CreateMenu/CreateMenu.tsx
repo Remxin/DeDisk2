@@ -1,7 +1,9 @@
 import React, { Dispatch, useContext, useState } from 'react'
 
-// components
-import Modal from '../../modals/Modal/Modal'
+
+// icons
+import { BiSolidFolderPlus, BiSolidFilePlus } from "react-icons/bi"
+import { BsFileEarmarkArrowUpFill, BsFolderSymlinkFill } from "react-icons/bs"
 
 // context
 import { DriveContext } from '@/src/contexts/DriveContext'
@@ -29,10 +31,10 @@ const CreateMenu = ({ visible, setVisible }: componentProps) => {
             </div>
             <div className={styles.container}>
                 <ul>
-                    <li onClick={handleCreation}>Create folder</li>
+                    <li onClick={handleCreation}><BiSolidFolderPlus/>Create folder</li>
                     <hr />
-                    <li>Send file</li>
-                    <li>Send Folder</li>
+                    <li><BsFileEarmarkArrowUpFill/>Send file</li>
+                    <li><BsFolderSymlinkFill/> Folder</li>
                 </ul>
             </div>
         </>
