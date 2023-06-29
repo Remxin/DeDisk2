@@ -12,10 +12,11 @@ import { useDrive } from '@/src/hooks/useDrive'
 
 // context
 import DriveContextProvider from '@/src/contexts/DriveContext'
+import { useSearchParams } from "next/navigation"
 
 
 const Path = () => {
-
+    
     return (
         <DriveContextProvider>
             <Navbar />

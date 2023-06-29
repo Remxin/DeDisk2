@@ -13,9 +13,8 @@ export const dirControllers = {
         
         try {
             const dirPath = await createUserDir(token.data.id, pathName)
-            
             if (!dirPath) return res.status(500).send({ error: { server: "Unknown server error" } })
-
+            
             return res.status(200).send({ path: dirPath })
         } catch (err) {
             //@ts-ignore

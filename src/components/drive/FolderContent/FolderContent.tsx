@@ -5,6 +5,7 @@ import { BiSolidFolder } from "react-icons/bi"
 
 // components
 import ClickableInstance from '../ClickableInstance/ClickableInstance'
+import CurrentFolderIndicator from '../CurrentFolderIndicator/CurrentFolderIndicator'
 
 // context
 import { DriveContext } from '@/src/contexts/DriveContext'
@@ -33,7 +34,9 @@ const FolderContent = () => {
     if (!e.target.value) return setCreateFolder(false)
     
     // @ts-ignore
-    dispatch({ type: "createDir", payload: e.target.value})
+    const newFolderPath = data.data.currentFolder + "/" + e.target.value
+ 
+    dispatch({ type: "createDir", payload: newFolderPath})
     setCreateFolder(false)
   }
 
@@ -42,6 +45,7 @@ const FolderContent = () => {
   }, [createFolder])
   return (
     <div className={styles.container}>
+      <CurrentFolderIndicator/>
         <ul className={styles.element_list}>
         {content.map((c, i) => (
            <ClickableInstance name={c.name} type={c.type} key={i}/>

@@ -39,11 +39,13 @@ export const initialState: stateType = {
 function driveReducer(state: stateType, action: ActionType) {
     switch (action.type) {
         case "move":
+            // console.log(action.payload)
             // @ts-ignore
             state.data = action.payload
             state.error = ""
             state.loading = false
             return { ...state }
+            // return { ...state, data: action.payload, error: "", loading: false}
         case "createDir":
             if(state.data.folderContent.some((e) => e.name === action.payload)) return { ...state } // ! to prevent calling twice
             state.data.folderContent.push({ name: action.payload, type: "folder"})
@@ -68,15 +70,19 @@ export function useDrive() {
         let resData = null
         switch(action.type) {
             case "move":
+                // console.log(action.payload)
                 dispatch({ type: "setLoading" })
                 res = await fetch(`${appConstants.serverUrl}/api/dir/${action.payload}`)
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error })
                 resData = await res.json()
+                // console.log(action.payload, resData.data)
+                
                 //@ts-ignore
                 dispatch({ ...action, payload: {currentFolder: action.payload, folderContent: resData.data}})
                 break
 
             case "createDir":
+                const dirName = action.payload.split("/").pop()
                 dispatch({ type: "setLoading"})
                 res = await fetch(`${appConstants.serverUrl}/api/dir/`, {
                     method: "POST",
@@ -92,9 +98,9 @@ export function useDrive() {
 
     const customDispatch = useCallback(cDisptatch, [])
 
-    useEffect(() => {
-        customDispatch({ type: "move", payload: "/"})
-    }, [])
+    // useEffect(() => {
+    //     customDispatch({ type: "move", payload: "/"})
+    // }, [])
 
     return { data: state, dispatch: customDispatch }
 }
