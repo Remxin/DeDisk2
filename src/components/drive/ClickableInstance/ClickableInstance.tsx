@@ -20,9 +20,7 @@ const ClickableInstance = ({ name, type }: componentProps) => {
 
   function handleClick() {
     if (type !== "folder") return
-    // console.log(data.data.currentFolder, data.data.currentFolder.replaceAll("/", "|"))
     const newPath = `${data.data.currentFolder}${name}`
-    // console.log(newPath)
     dispatch({ type: "move", payload: newPath})
   }
   return (

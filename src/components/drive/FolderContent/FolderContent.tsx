@@ -21,6 +21,7 @@ import { getFileIcon } from './helpers'
 
 const FolderContent = () => {
   const { createFolder, setCreateFolder, data, dispatch } = useContext(DriveContext)
+  // console.log(data)
   const content = data.data.folderContent
   const folderInputRef = useRef() as MutableRefObject<HTMLInputElement>
 

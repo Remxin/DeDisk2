@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { appConstants } from "../constants/appConstants"
 
+// router
+import { useSearchParams } from "next/navigation"
+
 // --- actions ---
 type Move = { type: "move", payload: string}
 type CreateDir = { type: "createDir", payload: string}
@@ -62,20 +65,24 @@ function driveReducer(state: stateType, action: ActionType) {
     }
 }
 
+
 export function useDrive() {
+    const searchParams = useSearchParams()
+    const pathName = searchParams.get("path")
     const [state, dispatch] = useReducer(driveReducer, initialState)
+    
 
     async function cDisptatch (action: ActionType) {
         let res = null
         let resData = null
         switch(action.type) {
             case "move":
-                // console.log(action.payload)
+                console.log(action.payload)
                 dispatch({ type: "setLoading" })
                 res = await fetch(`${appConstants.serverUrl}/api/dir/${action.payload}`)
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error })
                 resData = await res.json()
-                // console.log(action.payload, resData.data)
+                console.log(action.payload, resData.data)
                 
                 //@ts-ignore
                 dispatch({ ...action, payload: {currentFolder: action.payload, folderContent: resData.data}})
@@ -95,12 +102,16 @@ export function useDrive() {
                 break
         }
     }
-
     const customDispatch = useCallback(cDisptatch, [])
 
-    // useEffect(() => {
-    //     customDispatch({ type: "move", payload: "/"})
-    // }, [])
 
+
+    useEffect(() => {
+        if (pathName === null) {
+            customDispatch({ type: "move", payload: "/"})
+        } else {
+            customDispatch({ type: "move", payload: "/" + pathName})
+        }
+    }, [pathName])
     return { data: state, dispatch: customDispatch }
 }

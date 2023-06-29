@@ -27,15 +27,7 @@ export default function DriveContextProvider({ children }: ProviderProps) {
     const { data, dispatch } = useDrive()
     const [createFolder, setCreateFolder] = useState(false)
 
-    useEffect(() => {
-        console.log(pathName)
-        if (pathName === null) {
-            dispatch({ type: "move", payload: "/"})
-        } else {
-            // console.log("jest", "/" + pathName)
-            dispatch({ type: "move", payload: "/" + pathName})
-        }
-    }, [pathName])
+   
 
     return (
         <DriveContext.Provider value={{ data, dispatch, createFolder, setCreateFolder}}>
