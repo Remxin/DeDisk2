@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useReducer } from "react"
 import { appConstants } from "../constants/appConstants"
+import axios from "axios"
 
 // router
 import { useSearchParams } from "next/navigation"
@@ -8,7 +9,7 @@ import { useSearchParams } from "next/navigation"
 type Move = { type: "move", payload: string}
 type CreateDir = { type: "createDir", payload: string}
 type Sort = { type: "sort", payload: "create date" | "size" | "name"}
-type SendFile = { type: "sendFile", payload: File}
+type SendFile = { type: "sendFile", payload: FormData}
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
@@ -77,12 +78,10 @@ export function useDrive() {
         let resData = null
         switch(action.type) {
             case "move":
-                console.log(action.payload)
                 dispatch({ type: "setLoading" })
                 res = await fetch(`${appConstants.serverUrl}/api/dir/${action.payload}`)
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error })
                 resData = await res.json()
-                console.log(action.payload, resData.data)
                 
                 //@ts-ignore
                 dispatch({ ...action, payload: {currentFolder: action.payload, folderContent: resData.data}})
@@ -99,6 +98,20 @@ export function useDrive() {
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error.server })
                 resData = await res.json()
                 dispatch({ type: "createDir", payload: resData.path.split("/").pop()})
+                break
+            case "sendFile":
+                // dispatch({ type: "setLoading"})
+                const files = action.payload
+                console.log(files)
+                res = await axios.post(`${appConstants.serverUrl}/api/file`, files)
+                // res = await fetch(`${appConstants.serverUrl}/api/file`, {
+                //     method: "POST",
+                //     body: files,
+                //     headers: {
+                //         "Content-Type": "multipart/form-data"
+                //         // "Content-Type": "text/plain; charset=utf-8"
+                //     }
+                // })
                 break
         }
     }

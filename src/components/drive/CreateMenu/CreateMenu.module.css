@@ -48,3 +48,7 @@
 .container ul li svg {
     margin-right: 5px;
 }
+
+.image_input {
+    display: none;
+}

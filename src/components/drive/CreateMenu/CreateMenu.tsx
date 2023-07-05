@@ -1,4 +1,4 @@
-import React, { Dispatch, useContext, useState } from 'react'
+import React, { Dispatch, useContext, useState, useRef, MutableRefObject, ReactEventHandler } from 'react'
 
 
 // icons
@@ -18,10 +18,31 @@ type componentProps = {
 const CreateMenu = ({ visible, setVisible }: componentProps) => {
     //@ts-ignore
     const { dispatch, setCreateFolder, data } = useContext(DriveContext)
+    const fileInputRef = useRef() as MutableRefObject<HTMLInputElement>
 
     function handleCreation() {
         setCreateFolder(true)
         setVisible(false)
+    }
+
+    function handleFileSelect() {
+        fileInputRef.current.click()
+    }
+
+    function handleFileSend(e: React.ChangeEvent) {
+        // @ts-ignore
+        const files = e.target.files
+
+        if (!files) return
+        const formData = new FormData()
+
+        // @ts-ignore
+        Array.from(files).forEach((f: File, i: number) => {
+            formData.append(`File${i}`, f)
+        })
+        console.log(formData)
+        dispatch({ type: "sendFile", payload: formData})
+
     }
    
     if (!visible) return <></>
@@ -33,7 +54,8 @@ const CreateMenu = ({ visible, setVisible }: componentProps) => {
                 <ul>
                     <li onClick={handleCreation}><BiSolidFolderPlus/>Create folder</li>
                     <hr />
-                    <li><BsFileEarmarkArrowUpFill/>Send file</li>
+                    <li onClick={handleFileSelect}><BsFileEarmarkArrowUpFill/>Send file</li>
+                    <input type="file" className={styles.image_input} ref={fileInputRef} multiple onChange={handleFileSend}/>
                     <li><BsFolderSymlinkFill/> Folder</li>
                 </ul>
             </div>

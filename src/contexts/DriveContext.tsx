@@ -22,8 +22,7 @@ type ContextType = {
 export const DriveContext = createContext<ContextType>({ data: initialState, dispatch: () => null, setCreateFolder: () => null, createFolder: false})
 
 export default function DriveContextProvider({ children }: ProviderProps) {
-    const searchParams = useSearchParams()
-    const pathName = searchParams.get("path")
+    
     const { data, dispatch } = useDrive()
     const [createFolder, setCreateFolder] = useState(false)
 
