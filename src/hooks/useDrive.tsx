@@ -10,11 +10,12 @@ type Move = { type: "move", payload: string}
 type CreateDir = { type: "createDir", payload: string}
 type Sort = { type: "sort", payload: "create date" | "size" | "name"}
 type SendFile = { type: "sendFile", payload: FormData}
+type UploadFiles = { type: "uploadFiles", payload: string[] }
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
 
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles
 
 export interface stateType {
     data: {
@@ -53,6 +54,11 @@ function driveReducer(state: stateType, action: ActionType) {
         case "createDir":
             if(state.data.folderContent.some((e) => e.name === action.payload)) return { ...state } // ! to prevent calling twice
             state.data.folderContent.push({ name: action.payload, type: "folder"})
+            return { ...state }
+        case "uploadFiles":
+            for (let fileName of action.payload) {
+                state.data.folderContent.push({ name: fileName, type: "file"})
+            }
             return { ...state }
         case "setLoading":
             state.loading = true
@@ -103,15 +109,19 @@ export function useDrive() {
                 // dispatch({ type: "setLoading"})
                 const files = action.payload
                 console.log(files)
-                res = await axios.post(`${appConstants.serverUrl}/api/file`, files)
-                // res = await fetch(`${appConstants.serverUrl}/api/file`, {
-                //     method: "POST",
-                //     body: files,
-                //     headers: {
-                //         "Content-Type": "multipart/form-data"
-                //         // "Content-Type": "text/plain; charset=utf-8"
-                //     }
-                // })
+                // res = await axios.post(`${appConstants.serverUrl}/api/file`, files)
+                res = await fetch(`${appConstants.serverUrl}/api/file`, {
+                    method: "POST",
+                    body: files,
+                    headers: {
+                        // "Content-Type": "multipart/form-data"
+                        // "Content-Type": "text/plain; charset=utf-8"
+                    }
+                })
+
+                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
+                resData = await res.json()
+                dispatch({ type: "uploadFiles", payload: resData.data })
                 break
         }
     }
