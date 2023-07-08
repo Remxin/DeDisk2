@@ -18,5 +18,9 @@
     right: 5px;
     width: 30px;
     font-size: 18px;
+    border: none;
+    border-radius: 50%;
+    background-color: #ccf;
     aspect-ratio: 1 / 1;
+    cursor: pointer;
 }
