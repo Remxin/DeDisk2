@@ -34,14 +34,8 @@ const CreateMenu = ({ visible, setVisible }: componentProps) => {
         const files = e.target.files
 
         if (!files) return
-        const formData = new FormData()
-
-        // @ts-ignore
-        Array.from(files).forEach((f: File, i: number) => {
-            formData.append(`File${i}`, f)
-        })
-        console.log(formData)
-        dispatch({ type: "sendFile", payload: formData})
+    
+        dispatch({ type: "sendFile", payload: { files, folder: data.data.currentFolder }})
 
     }
    

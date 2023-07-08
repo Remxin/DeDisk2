@@ -22,9 +22,15 @@ export const fileControllers = {
         
         try {
             const file: any = await readFile(req, true, cookies.data.id)
-            const fileName = file.files.File0[0].originalFilename
-            console.log(fileName)
-            resultBody = { status: "ok", message: "Files were uploaded successfully", data: [fileName]}
+            let filesNames = []
+            console.log(file)
+
+            for (let i = 0; i < Object.keys(file.files).length; i++) {
+                const fileData = file.files['File' + i][0]
+                filesNames.push(fileData.originalFilename)
+            }
+          
+            resultBody = { status: "ok", message: "Files were uploaded successfully", data: filesNames}
         } catch (err) {
             status = 500
             resultBody = { status: "fail", message: "Something went wrong", data: null}

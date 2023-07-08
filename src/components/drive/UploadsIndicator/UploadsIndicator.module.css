@@ -1,0 +1,22 @@
+.container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 400px;
+    padding: 40px 10px 0;
+    background-color: #eef;
+    border-top-left-radius: 8px;
+    box-shadow: 0 0 2px 1px black;
+}
+
+.arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 30px;
+    font-size: 18px;
+    aspect-ratio: 1 / 1;
+}

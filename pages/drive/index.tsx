@@ -3,6 +3,7 @@ import Navbar from '@/src/layout/Navbar/Navbar'
 // components
 import RightMenu from '@/src/components/drive/RightMenu/RightMenu'
 import FolderContent from '@/src/components/drive/FolderContent/FolderContent'
+import UploadsIndicator from '@/src/components/drive/UploadsIndicator/UploadsIndicator'
 
 // styles
 import styles from "@/styles/drive/Drive.module.css"
@@ -24,6 +25,7 @@ const Path = () => {
                 <RightMenu />
                 <FolderContent/>
             </div>
+            <UploadsIndicator/>
         </DriveContextProvider>
     )
 }
