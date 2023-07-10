@@ -7,7 +7,7 @@ export function readFile(req: NextApiRequest, saveLocally: boolean, userId: stri
     const options: formidable.Options = {}
 
     if (saveLocally) {
-        options.uploadDir = path.join('serverFiles', "folders", userId)
+        options.uploadDir = path.join('serverFiles', "folders", userId, ".__temp__")
         options.filename = (name, ext, path, form) => {
             return path.originalFilename + ""
         }
@@ -20,17 +20,17 @@ export function readFile(req: NextApiRequest, saveLocally: boolean, userId: stri
             if (err) return reject(err)
             const newFolder = JSON.parse(fields.jsondata[0]).folder
           
-            if (newFolder !== "/") { // !== "/"
-                for (let i = 0; i < Object.keys(files).length; i++) {
-                    // @ts-ignore
-                    const fileData = files['File' + i][0]
-                    const fileName = fileData.newFilename
-                    const currentPath = path.join('serverFiles', "folders", userId, fileName)
-                    const newPath = path.join('serverFiles', "folders", userId, newFolder, fileName)
-                    // console.log(fileData.newFilename)
-                    await moveFile(currentPath, newPath)
-                }
+        
+            for (let i = 0; i < Object.keys(files).length; i++) {
+                // @ts-ignore
+                const fileData = files['File' + i][0]
+                const fileName = fileData.newFilename
+                const currentPath = path.join('serverFiles', "folders", userId, ".__temp__", fileName)
+                const newPath = path.join('serverFiles', "folders", userId, newFolder, fileName)
+                // console.log(fileData.newFilename)
+                await moveFile(currentPath, newPath)
             }
+            
             resolve({ fields, files })
         })
     })
