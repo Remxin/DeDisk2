@@ -16,22 +16,30 @@ export function readFile(req: NextApiRequest, saveLocally: boolean, userId: stri
     const form = formidable(options)
     
     return new Promise((resolve, reject) => {
-        form.parse(req, (err, fields, files) => {
-            console.log(fields, err, files)
-            // @ts-ignore
-            // options.uploadDir = path.join('serverFiles', "folders", userId, JSON.parse(fields.jsondata[0]).folder)
-            // @ts-ignore
-            // console.log(JSON.parse(fields.jsondata[0]).folder)
+        form.parse(req, async (err, fields, files) => {
             if (err) return reject(err)
+            const newFolder = JSON.parse(fields.jsondata[0]).folder
+          
+            if (newFolder !== "/") { // !== "/"
+                for (let i = 0; i < Object.keys(files).length; i++) {
+                    // @ts-ignore
+                    const fileData = files['File' + i][0]
+                    const fileName = fileData.newFilename
+                    const currentPath = path.join('serverFiles', "folders", userId, fileName)
+                    const newPath = path.join('serverFiles', "folders", userId, newFolder, fileName)
+                    // console.log(fileData.newFilename)
+                    await moveFile(currentPath, newPath)
+                }
+            }
             resolve({ fields, files })
         })
     })
 }
 
-export function moveFile(filePath: string, newFolderPath: string) {
-    const fileName = filePath.split('/').pop()
+export function moveFile(filePath: string, newFilePath: string) {
+    console.log(filePath, newFilePath)
     return new Promise((resolve, reject) => {
-        fs.rename(filePath, newFolderPath + fileName, function (err) {
+        fs.rename(filePath, newFilePath, function (err) {
             if (err) return reject(err)
             resolve({ message: 'success'})
         })
