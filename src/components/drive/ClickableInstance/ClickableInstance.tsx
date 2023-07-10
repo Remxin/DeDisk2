@@ -24,7 +24,7 @@ const ClickableInstance = ({ name, type }: componentProps) => {
     dispatch({ type: "move", payload: newPath})
   }
   return (
-    <li className={styles.element} onClick={handleClick}>{type === "folder" ? <BiSolidFolder/> : getFileIcon(name)} {name}</li>
+    <li className={styles.element} onClick={handleClick}>{type === "folder" ? <BiSolidFolder/> : getFileIcon(name)} <p>{name}</p></li>
   )
 }
 

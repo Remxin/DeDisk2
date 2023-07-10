@@ -50,13 +50,13 @@ const UploadsIndicator = () => {
         <motion.div className={styles.container} variants={containerVariants} initial='initial' animate={containerControlls}>
             <motion.button className={styles.arrow} onClick={handleArrowClick} variants={arrowVariants} initial="initial" animate={arrowControlls}><BsArrowDownCircleFill/></motion.button>
             {visible && data.uploads.map((u, i) => (
-                <div key={i}>
-                    <p>{u.file}</p>
+                <div key={i} className={styles.upload}>
+                    <p className={styles.uplaod_name}>{u.file}</p>
                     <span>
                         <progress value={u.loaded} max={u.total}></progress>
                         {Math.round(u.loaded/u.total * 100) + "%"}
                     </span>
-                    <p>{getBytesString(u.loaded, 1)} / {getBytesString(u.total, 1)}</p>
+                    <p className={styles.upload_bytes}>{getBytesString(u.loaded, 1)} / {getBytesString(u.total, 1)}</p>
                 </div>
             ))}
         </motion.div>

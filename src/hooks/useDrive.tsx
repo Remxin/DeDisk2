@@ -52,7 +52,6 @@ export const initialState: stateType = {
 function driveReducer(state: stateType, action: ActionType) {
     switch (action.type) {
         case "move":
-            // console.log(action.payload)
             // @ts-ignore
             state.data = action.payload
             state.error = ""
@@ -64,13 +63,11 @@ function driveReducer(state: stateType, action: ActionType) {
             state.data.folderContent.push({ name: action.payload, type: "folder"})
             return { ...state }
         case "uploadFiles":
-            console.log(action.payload)
             for (let fileName of action.payload) {
                 state.data.folderContent.push({ name: fileName, type: "file"})
             }
             return { ...state }
         case "uploadingProgress":
-            // console.log(action.payload)
             const { file, total, loaded } = action.payload
             // __ find existing file progress indicator ___
             const progress = state.uploads.find(e => e.file === action.payload.file)
@@ -131,43 +128,36 @@ export function useDrive() {
             case "sendFile":
                 // dispatch({ type: "setLoading"})
                 const { files, folder } = action.payload
-                
-                const formData = new FormData()
-               
-                // @ts-ignore
-                Array.from(files).forEach((f: File, i: number) => {
-                    console.log(f, i)
-                    formData.append(`File${i}`, f)                
-                })
-           
-                // ___ adding information about current folder ___
-                formData.append('jsondata', JSON.stringify({ folder }))
-                
 
                 const myUploadProgress = (myFileName: string) => (progress: any) => {
-                    // let percentage = Math.floor((progress.loaded * 100) / progress.total)
+                    
                     dispatch({ type: "uploadingProgress", payload: { file: myFileName, total: progress.total, loaded: progress.loaded}})
-                  }
-                  
-                  for (let i=0; i<files.length; i++) {
-                    let config = {
-                      onUploadProgress: myUploadProgress(files[i].name)
-                    };
+                }
 
+            
+                // tracking upload progress for multiple files
+                for (let i=0; i<files.length; i++) { 
+                const formData = new FormData()
+                formData.append(`File0`, files[i])
+            
+                // ___ adding information about current folder ___
+                formData.append('jsondata', JSON.stringify({ folder }))
+                    
+                let config = {
+                    onUploadProgress: myUploadProgress(files[i].name)
+                };
                 res = await axios.post(`${appConstants.serverUrl}/api/file`, formData, config)
-                console.log(res)
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload:  res.data.message })
                 resData = res.data
-                console.log(resData)
                 dispatch({ type: "uploadFiles", payload: resData.data })
+                }
                 break
+
         }
-    }
+    
 }
     const customDispatch = useCallback(cDisptatch, [])
-
-    console.log(state)
 
     useEffect(() => {
         if (pathName === null) {
