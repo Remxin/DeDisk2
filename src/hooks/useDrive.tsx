@@ -13,12 +13,13 @@ type SendFile = { type: "sendFile", payload: { files: File[], folder: string }}
 type UploadFiles = { type: "uploadFiles", payload: string[] }
 type SetUploadingProgress = { type: "uploadingProgress", payload: UploadProgress}
 type Rename = { type: "rename", payload: { name: string, newName: string, currentLocation: string }}
+type Delete = { type: "delete", payload: { target: string }}
 type ClearUploads = { type: "clearUploads" }
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
 
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete
 type UploadProgress = {
     file: string
     loaded: number
@@ -107,6 +108,10 @@ export function useDrive() {
     async function cDisptatch (action: ActionType) {
         let res = null
         let resData = null
+        let name = null
+        let currentLocation = null
+
+        // handle main actions
         switch(action.type) {
             case "move":
                 dispatch({ type: "setLoading" })
@@ -160,16 +165,26 @@ export function useDrive() {
                 break
             case "rename":
                 dispatch({ type: "setLoading" })
-                const { name, newName, currentLocation } = action.payload
+                let { name, newName, currentLocation } = action.payload
                 res = await fetch(`${appConstants.serverUrl}/api/file/${name}`, {
                     method: "PATCH",
                     body: JSON.stringify({ newName, currentLocation }),
-                    // credentials: "include"
                 })
 
                 resData = await res.json()
                 
                 dispatch({ type: "rename", payload: { name: resData.data.name, newName: resData.data.newName, currentLocation: resData.data.currentLocation }})
+                break
+            case "delete":
+                dispatch({ type: "setLoading" })
+                const target = action.payload.target
+                console.log(target)
+                res = await fetch(`${appConstants.serverUrl}/api/file/${target}`, {
+                    method: "DELETE",
+                })
+
+                resData = await res.json()
+                console.log(resData)
                 break
 
         }

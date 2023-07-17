@@ -57,6 +57,24 @@ const FolderContent = () => {
 
   }
 
+  // handle delete and get info
+  useEffect(() => {
+    if (!contextAction || contextAction === "rename" || !customContext.value) return
+
+    if (contextAction === "delete") { // delete structure
+      let target = null
+      if (data.data.currentFolder === "/") target = customContext.value
+      else {
+        console.log(data.data.currentFolder)
+        target = (data.data.currentFolder.slice(1) + "/").replaceAll("/", "|") + customContext.value
+      }
+
+      dispatch({ type: "delete", payload: { target }})
+    } else if (contextAction === "details") {
+
+    }
+  }, [contextAction])
+
 
 
 

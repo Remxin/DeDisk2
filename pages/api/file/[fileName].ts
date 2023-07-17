@@ -29,5 +29,6 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method === "PATCH") return fileControllers.rename(req, res)
+    else if (req.method === "DELETE") return fileControllers.delete(req, res)
 
 }

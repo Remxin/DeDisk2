@@ -62,3 +62,22 @@ export function renameFile(location: string, name: string, newName: string, user
         }
     })
 }
+
+export function deleteFile(absolutePath: string, userId: string) {
+    console.log(absolutePath)
+    absolutePath = absolutePath.replaceAll("%20", " ")
+    const pathParts = absolutePath.split("%7C")
+    
+
+    const finalPath = path.join("serverFiles", "folders", userId, ...pathParts)
+    return new Promise((resolve, reject) => {
+        try {
+            fs.rm(finalPath, (err) => {
+                if (err) return reject({ err })
+                resolve({ message: "success" })
+            })
+        } catch (err) {
+            reject({ err })
+        }
+    })
+}
