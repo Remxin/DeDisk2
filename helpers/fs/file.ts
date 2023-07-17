@@ -27,7 +27,6 @@ export function readFile(req: NextApiRequest, saveLocally: boolean, userId: stri
                 const fileName = fileData.newFilename
                 const currentPath = path.join('serverFiles', "folders", userId, ".__temp__", fileName)
                 const newPath = path.join('serverFiles', "folders", userId, newFolder, fileName)
-                // console.log(fileData.newFilename)
                 await moveFile(currentPath, newPath)
             }
             

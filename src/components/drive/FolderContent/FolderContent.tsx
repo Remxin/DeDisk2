@@ -1,4 +1,4 @@
-import { MutableRefObject, useContext, useEffect, useRef } from 'react'
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
 
 // icons
 import { BiSolidFolder } from "react-icons/bi"
@@ -6,6 +6,7 @@ import { BiSolidFolder } from "react-icons/bi"
 // components
 import ClickableInstance from '../ClickableInstance/ClickableInstance'
 import CurrentFolderIndicator from '../CurrentFolderIndicator/CurrentFolderIndicator'
+import ContextMenuModal from '../../modals/ContextMenuModal/ContextMenuModal'
 
 // context
 import { DriveContext } from '@/src/contexts/DriveContext'
@@ -21,10 +22,25 @@ import { getFileIcon } from './helpers'
 
 const FolderContent = () => {
   const { createFolder, setCreateFolder, data, dispatch } = useContext(DriveContext)
-  // console.log(data)
+
   const content = data.data.folderContent
   const folderInputRef = useRef() as MutableRefObject<HTMLInputElement>
 
+  // ___ for clickable instance ___
+  const [customContext, setCustomContext] = useState({ show: false, x: 0, y: 0, value: ""})
+
+  function handleRightClick(e: React.MouseEvent, value: string) {
+    e.preventDefault()
+    // console.log(e, value)
+    setCustomContext({ show: true, x: e.clientX, y: e.clientY, value })
+  }
+
+  function handleContextBlur() {
+    setCustomContext(p => ({ ...p, show: false }))
+  }
+
+
+  // ___ for folder creation ___
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
     if (!e.target.value) return setCreateFolder(false) 
   }
@@ -49,10 +65,12 @@ const FolderContent = () => {
       <CurrentFolderIndicator/>
         <ul className={styles.element_list}>
         {content.map((c, i) => (
-           <ClickableInstance name={c.name} type={c.type} key={i}/>
+          //@ts-ignore
+           <ClickableInstance name={c.name} type={c.type} key={i} handleRightClick={handleRightClick}/>
         ))}
         {createFolder ? <li className={styles.element}> <BiSolidFolder/><input placeholder='Folder name' ref={folderInputRef} onBlur={handleBlur} onKeyDown={handleKeyEnter}/></li> : null}
         </ul>
+        { customContext.show && <ContextMenuModal x={customContext.x} y={customContext.y} setVisible={handleContextBlur}/>}
     </div>
   )
 }

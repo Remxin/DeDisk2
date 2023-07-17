@@ -26,9 +26,10 @@ type componentProps = {
     children: JSX.Element | JSX.Element[],
     visible: boolean
     setVisible: React.Dispatch<boolean>
+    className?: string
 }
 
-const Modal = ({ children, visible, setVisible }: componentProps) => {
+const Modal = ({ children, visible, setVisible, className }: componentProps) => {
 
     function handleVisibility(e: React.MouseEvent) {
         if (e.currentTarget === e.target) setVisible(false)
@@ -36,7 +37,7 @@ const Modal = ({ children, visible, setVisible }: componentProps) => {
     return (
         <AnimatePresence>
             {visible &&
-                <motion.div variants={modalVariants} className={modalStyles.modal} onClick={handleVisibility} initial="initial" animate="animate" exit="initial">
+                <motion.div variants={modalVariants} className={`${modalStyles.modal} ${className}`} onClick={handleVisibility} initial="initial" animate="animate" exit="initial">
                     <motion.div variants={modalContentVariants} className={modalStyles.modal_content} initial="initial" animate="animate" exit="initial">
                         {children}
                     </motion.div>

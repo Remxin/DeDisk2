@@ -81,6 +81,10 @@
     background-color: #eef;
 }
 
+.plan_modal {
+    z-index: 1000;
+}
+
 .plan_cards {
     margin-top: 20px;
     display: flex;

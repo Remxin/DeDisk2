@@ -35,10 +35,10 @@ export default async function handler(
     const { email, password } = req.body as Body
 
     try {
+        console.log(email)
         const user = await prisma.user.findUnique({ where: { email } })
         if (!user) return res.status(404).send({ error: { email: "User not found" } })
         const validPass = await hashHelpers.comparePass(user.password, password)
-        console.log(console.log(password))
         if (!validPass.res) return res.status(401).send({ error: { password: "Wrong password" } })
 
         const token = signToken({ id: user.id }, "user", "5d")
