@@ -6,7 +6,7 @@ import { BiSolidFolder } from "react-icons/bi"
 // components
 import ClickableInstance from '../ClickableInstance/ClickableInstance'
 import CurrentFolderIndicator from '../CurrentFolderIndicator/CurrentFolderIndicator'
-import ContextMenuModal from '../../modals/ContextMenuModal/ContextMenuModal'
+import ContextMenuModal from '../ContextMenuModal/ContextMenuModal'
 
 // context
 import { DriveContext } from '@/src/contexts/DriveContext'
@@ -18,26 +18,46 @@ import styles from "./FolderContent.module.css"
 import { getFileIcon } from './helpers'
 
 // types
+export type ContextActionType = "" | "rename" | "details" | "delete"
 
 
 const FolderContent = () => {
   const { createFolder, setCreateFolder, data, dispatch } = useContext(DriveContext)
 
+  // edit object
+  
   const content = data.data.folderContent
   const folderInputRef = useRef() as MutableRefObject<HTMLInputElement>
-
+  
   // ___ for clickable instance ___
+  // ____ for custom context
   const [customContext, setCustomContext] = useState({ show: false, x: 0, y: 0, value: ""})
-
+  const [contextAction, setContextAction] = useState<ContextActionType>("")
+  
   function handleRightClick(e: React.MouseEvent, value: string) {
     e.preventDefault()
-    // console.log(e, value)
     setCustomContext({ show: true, x: e.clientX, y: e.clientY, value })
   }
+ 
 
-  function handleContextBlur() {
-    setCustomContext(p => ({ ...p, show: false }))
+  function resetContextActions() {
+    setCustomContext({ show: false, x: 0, y: 0, value: ""})
+    setContextAction("")
   }
+  function handleContextBlur(e: React.TouchEvent) {
+    //@ts-ignore
+    if (e.target.dataset?.action) {
+      //@ts-ignore
+        setContextAction(e.target.dataset.action)
+        setCustomContext(p => ({ ...p, show: false }))
+    } else {
+      setCustomContext(p => ({ ...p, show: false, value: "" }))
+      setContextAction("")
+    }
+
+  }
+
+
 
 
   // ___ for folder creation ___
@@ -66,11 +86,11 @@ const FolderContent = () => {
         <ul className={styles.element_list}>
         {content.map((c, i) => (
           //@ts-ignore
-           <ClickableInstance name={c.name} type={c.type} key={i} handleRightClick={handleRightClick}/>
+           <ClickableInstance name={c.name} type={c.type} key={i} handleRightClick={handleRightClick} edit={contextAction === "rename" && customContext.value === c.name} handleInputBlur={resetContextActions}/>
         ))}
         {createFolder ? <li className={styles.element}> <BiSolidFolder/><input placeholder='Folder name' ref={folderInputRef} onBlur={handleBlur} onKeyDown={handleKeyEnter}/></li> : null}
         </ul>
-        { customContext.show && <ContextMenuModal x={customContext.x} y={customContext.y} setVisible={handleContextBlur}/>}
+        { customContext.show && <ContextMenuModal x={customContext.x} y={customContext.y} setVisible={handleContextBlur} />}
     </div>
   )
 }

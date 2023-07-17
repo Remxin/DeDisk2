@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState,useEffect, MutableRefObject, useRef } from 'react'
 
 // icons
 import { getFileIcon } from '../FolderContent/helpers'
 import { BiSolidFolder } from 'react-icons/bi'
 
 // components
-import ContextMenuModal from '../../modals/ContextMenuModal/ContextMenuModal'
+import ContextMenuModal from '../ContextMenuModal/ContextMenuModal'
 
 // styles
 import styles from "./ClickableInstance.module.css"
@@ -16,25 +16,35 @@ import { DriveContext } from '@/src/contexts/DriveContext'
 type componentProps = {
     name: string
     type: "folder" | "file",
+    edit: boolean
     handleRightClick: (value: string) => void
+    handleInputBlur: () => void
 }
 
-const ClickableInstance = ({ name, type, handleRightClick }: componentProps) => {
+const ClickableInstance = ({ name, type, handleRightClick, edit, handleInputBlur }: componentProps) => {
   const { dispatch, data} = useContext(DriveContext)
-  const [rename, setRename] = useState({ start: false, newName: "" })
+  // const [newName, setNewName] = useState(name)
+  const inputRef = useRef() as MutableRefObject<HTMLInputElement>
  
+  useEffect(() => {
+    if (!inputRef.current) return
+    if (edit) inputRef.current.focus()
+  }, [edit])
 
-  function renameInstance() {
-
-  }
+  
 
   function handleKeyPress(e: React.KeyboardEvent) {
-    if (e.key !== "Enter") return
-    console.log(e.key)
+    if (e.key !== "Enter" ) return
+
+    if (inputRef.current.value === name || !inputRef.current.value) return handleInputBlur()
+
+    // TODO: handle instance name validation
+    dispatch({ type: "rename", payload: { name, newName: inputRef.current.value, currentLocation: data.data.currentFolder }})
+    handleInputBlur()
   }
 
   function handleClick() {
-    if (type !== "folder") return
+    if (type !== "folder" || edit) return
     const newPath = `${data.data.currentFolder}${name}`
     dispatch({ type: "move", payload: newPath})
   }
@@ -43,7 +53,7 @@ const ClickableInstance = ({ name, type, handleRightClick }: componentProps) => 
       {/* @ts-ignore */}
       <li className={styles.element} onClick={handleClick} onContextMenu={(e) => handleRightClick(e, name)}>
         {type === "folder" ? <BiSolidFolder/> : getFileIcon(name)}
-        {rename.start ? <input placeholder='new name' value={name} onKeyDown={handleKeyPress} /> : <p>{name}</p>}
+        {edit ? <input placeholder='new name' onKeyDown={handleKeyPress} defaultValue={name} ref={inputRef} onBlur={handleInputBlur}/> : <p>{name}</p>}
       </li>
       
     </>

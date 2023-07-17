@@ -36,11 +36,29 @@ export function readFile(req: NextApiRequest, saveLocally: boolean, userId: stri
 }
 
 export function moveFile(filePath: string, newFilePath: string) {
-    console.log(filePath, newFilePath)
     return new Promise((resolve, reject) => {
         fs.rename(filePath, newFilePath, function (err) {
             if (err) return reject(err)
             resolve({ message: 'success'})
         })
+    })
+}
+
+export function renameFile(location: string, name: string, newName: string, userId: string) {
+
+    const originalPath = path.join("serverFiles", "folders", userId, name)
+    const newPath = path.join("serverFiles", "folders", userId, newName)
+    console.log(originalPath, newPath)
+
+    return new Promise((resolve, reject) => {
+               
+        try {
+            fs.rename(originalPath, newPath, (err) => {
+                if (err) return reject(err)
+                resolve({ message: "success" })
+            })
+        } catch (err) {
+            reject({ err })
+        }
     })
 }

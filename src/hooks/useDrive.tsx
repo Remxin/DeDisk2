@@ -12,12 +12,13 @@ type Sort = { type: "sort", payload: "create date" | "size" | "name"}
 type SendFile = { type: "sendFile", payload: { files: File[], folder: string }}
 type UploadFiles = { type: "uploadFiles", payload: string[] }
 type SetUploadingProgress = { type: "uploadingProgress", payload: UploadProgress}
+type Rename = { type: "rename", payload: { name: string, newName: string, currentLocation: string }}
 type ClearUploads = { type: "clearUploads" }
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
 
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename
 type UploadProgress = {
     file: string
     loaded: number
@@ -79,6 +80,10 @@ function driveReducer(state: stateType, action: ActionType) {
             return { ...state }
         case "clearUploads":
             state.uploads = []
+            return { ...state }
+        case "rename":
+            const myFile = state.data.folderContent.find((e) => e.name === action.payload.name) !
+            myFile.name = action.payload.newName
             return { ...state }
         case "setLoading":
             state.loading = true
@@ -152,6 +157,19 @@ export function useDrive() {
                 resData = res.data
                 dispatch({ type: "uploadFiles", payload: resData.data })
                 }
+                break
+            case "rename":
+                dispatch({ type: "setLoading" })
+                const { name, newName, currentLocation } = action.payload
+                res = await fetch(`${appConstants.serverUrl}/api/file/${name}`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ newName, currentLocation }),
+                    // credentials: "include"
+                })
+
+                resData = await res.json()
+                
+                dispatch({ type: "rename", payload: { name: resData.data.name, newName: resData.data.newName, currentLocation: resData.data.currentLocation }})
                 break
 
         }

@@ -24,16 +24,10 @@ type Cookies = {
     token: string
 }
 
-export const config = {
-    api: {
-        bodyParser: false
-    }
-}
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    if (req.method === "POST") return fileControllers.sendFiles(req, res)
+    if (req.method === "PATCH") return fileControllers.rename(req, res)
 
 }
