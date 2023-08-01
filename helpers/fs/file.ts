@@ -64,7 +64,6 @@ export function renameFile(location: string, name: string, newName: string, user
 }
 
 export function deleteFile(absolutePath: string, userId: string) {
-    console.log(absolutePath)
     absolutePath = absolutePath.replaceAll("%20", " ")
     const pathParts = absolutePath.split("%7C")
     
@@ -72,10 +71,26 @@ export function deleteFile(absolutePath: string, userId: string) {
     const finalPath = path.join("serverFiles", "folders", userId, ...pathParts)
     return new Promise((resolve, reject) => {
         try {
-            fs.rm(finalPath, (err) => {
-                if (err) return reject({ err })
-                resolve({ message: "success" })
-            })
+            fs.rmSync(finalPath, { recursive: true, force: true })
+        } catch (err) {
+            reject({ err })
+        }
+    })
+}
+
+export function getFileInfo(absolutePath: string, userId: string) {
+    absolutePath = absolutePath.replaceAll("%20", " ")
+    const pathParts = absolutePath.split("%7C")
+    const fileName = pathParts.pop()!
+
+    const finalPath = path.join("serverFiles", "folders", userId, ...pathParts, fileName)
+    return new Promise((resolve, reject) => {
+        try {
+            const extension = path.extname(finalPath)
+            console.log(finalPath, extension, pathParts)
+            let data = { ...fs.statSync(finalPath), name: fileName, extension }
+        
+            resolve(data)
         } catch (err) {
             reject({ err })
         }

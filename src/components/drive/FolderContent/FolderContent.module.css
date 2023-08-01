@@ -30,3 +30,18 @@
 .element svg {
     margin-right: 5px;
 }
+
+.infoTitle {
+    margin-bottom: 10px;
+}
+
+.infoTable {
+    width: 100%;
+}
+
+
+.infoTable td {
+    padding: 0 5px;
+    background-color: #fff;
+    border-radius: 2px;
+}

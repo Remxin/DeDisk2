@@ -14,22 +14,40 @@ type UploadFiles = { type: "uploadFiles", payload: string[] }
 type SetUploadingProgress = { type: "uploadingProgress", payload: UploadProgress}
 type Rename = { type: "rename", payload: { name: string, newName: string, currentLocation: string }}
 type Delete = { type: "delete", payload: { target: string }}
+type GetInformations = { type: "informations", payload: { target: string }}
+type ClearData = { type: "clear additional data" }
 type ClearUploads = { type: "clearUploads" }
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
 
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete
+// _ ACTIONS _
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData
+
+// --- upload ---
 type UploadProgress = {
     file: string
     loaded: number
     total: number
 }
 
+// additional informations
+type FileInformations = {
+    name: string
+    size: number
+    path: string
+    atime: Date
+    birthtime: Date
+    extension: string
+}
+type AdditionalData = null | ({ type: "file data" } & FileInformations)
+
 export interface stateType {
     data: {
+        searchType: "normal" | "favourites" | "shared"
         currentFolder: string
         folderContent: structureType[]
+        additionalData: AdditionalData
     },
     uploads: UploadProgress[],
     loading: boolean
@@ -43,8 +61,10 @@ interface structureType {
 
 export const initialState: stateType = {
     data: {
+        searchType: "normal",
         currentFolder: "",
-        folderContent: []
+        folderContent: [],
+        additionalData: null
     },
     uploads: [],
     loading: true,
@@ -86,6 +106,13 @@ function driveReducer(state: stateType, action: ActionType) {
             const myFile = state.data.folderContent.find((e) => e.name === action.payload.name) !
             myFile.name = action.payload.newName
             return { ...state }
+        case "informations":
+            // @ts-ignore
+            state.data.additionalData = { type: "file data", ...action.payload }
+            return { ...state }
+        case "clear additional data":
+            state.data.additionalData = null
+            return { ...state }
         case "setLoading":
             state.loading = true
             return { ...state }
@@ -108,8 +135,7 @@ export function useDrive() {
     async function cDisptatch (action: ActionType) {
         let res = null
         let resData = null
-        let name = null
-        let currentLocation = null
+        let target = null
 
         // handle main actions
         switch(action.type) {
@@ -171,20 +197,38 @@ export function useDrive() {
                     body: JSON.stringify({ newName, currentLocation }),
                 })
 
+                
                 resData = await res.json()
                 
                 dispatch({ type: "rename", payload: { name: resData.data.name, newName: resData.data.newName, currentLocation: resData.data.currentLocation }})
                 break
             case "delete":
                 dispatch({ type: "setLoading" })
-                const target = action.payload.target
-                console.log(target)
+                 target = action.payload.target
+                
                 res = await fetch(`${appConstants.serverUrl}/api/file/${target}`, {
                     method: "DELETE",
                 })
 
+                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
                 resData = await res.json()
                 console.log(resData)
+                break
+            case "informations":
+                dispatch({ type: "setLoading" })
+                target = action.payload.target
+                console.log(target)
+
+                res = await fetch(`${appConstants.serverUrl}/api/file/${target}/informations`, {
+                    method: "GET"
+                })
+                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
+                resData = await res.json()
+                console.log(resData)
+                dispatch({ type: "informations", payload: resData.data})
+                break
+            case "clear additional data":
+                dispatch({ type: "clear additional data"})
                 break
 
         }

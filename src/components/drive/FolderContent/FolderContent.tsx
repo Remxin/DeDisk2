@@ -16,6 +16,8 @@ import styles from "./FolderContent.module.css"
 
 // helpers
 import { getFileIcon } from './helpers'
+import Modal from '../../modals/Modal/Modal'
+import { getBytesString, getStringBytesFromUnit } from '@/helpers/data/size'
 
 // types
 export type ContextActionType = "" | "rename" | "details" | "delete"
@@ -25,7 +27,6 @@ const FolderContent = () => {
   const { createFolder, setCreateFolder, data, dispatch } = useContext(DriveContext)
 
   // edit object
-  
   const content = data.data.folderContent
   const folderInputRef = useRef() as MutableRefObject<HTMLInputElement>
   
@@ -65,13 +66,18 @@ const FolderContent = () => {
       let target = null
       if (data.data.currentFolder === "/") target = customContext.value
       else {
-        console.log(data.data.currentFolder)
         target = (data.data.currentFolder.slice(1) + "/").replaceAll("/", "|") + customContext.value
       }
 
       dispatch({ type: "delete", payload: { target }})
     } else if (contextAction === "details") {
+      let target = null
+      if (data.data.currentFolder === "/") target = customContext.value
+      else {
+        target = (data.data.currentFolder.slice(1) + "/").replaceAll("/", "|") + customContext.value
+      }
 
+      dispatch({ type: "informations", payload: { target }})
     }
   }, [contextAction])
 
@@ -109,6 +115,40 @@ const FolderContent = () => {
         {createFolder ? <li className={styles.element}> <BiSolidFolder/><input placeholder='Folder name' ref={folderInputRef} onBlur={handleBlur} onKeyDown={handleKeyEnter}/></li> : null}
         </ul>
         { customContext.show && <ContextMenuModal x={customContext.x} y={customContext.y} setVisible={handleContextBlur} />}
+        {/* informations modal */}
+        <Modal visible={!!data.data.additionalData?.type} setVisible={() => dispatch({ type: "clear additional data" })} size={{ width: "90vw", height: "90vw"}}>
+          <h2 className={styles.infoTitle}>File informations</h2>
+          <table className={styles.infoTable}>
+            <tbody>
+              <tr>
+                <td>name</td>
+                <td>{data.data.additionalData?.name}</td>
+              </tr>
+              <tr>
+                <td>path</td>
+                <td>{data.data.currentFolder}</td>
+              </tr>
+              <tr>
+                <td>size</td>
+                <td>{getStringBytesFromUnit("B", data.data.additionalData?.size!, 1)}</td>
+              </tr>
+              <tr>
+                <td>extension</td>
+                <td>{data.data.additionalData?.extension}</td>
+              </tr>
+              <tr>
+                <td>last modified</td>
+                {/* @ts-ignore */}
+                <td>{new Date(data.data.additionalData?.atime).toDateString()}</td>
+              </tr>
+              <tr>
+                <td>creation date</td>
+                {/* @ts-ignore */}
+                <td>{new Date(data.data.additionalData?.birthtime).toDateString()}</td>
+              </tr>
+            </tbody>
+          </table>
+        </Modal>
     </div>
   )
 }

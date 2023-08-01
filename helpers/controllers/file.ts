@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { readFile, renameFile, deleteFile } from "../fs/file";
+import { readFile, renameFile, deleteFile, getFileInfo } from "../fs/file";
 import { cookieValidations } from "../validation/cookieValidations";
-import { getLastUrlPart } from "../data/links";
+import { getLastUrlPart, getUrlPartFromEnd } from "../data/links";
 
 
 
@@ -73,11 +73,31 @@ export const fileControllers = {
         if (cookies.error) return res.status(401).send({ error: cookies.error.user })
         
         try {
-            const data = await deleteFile(replacedPath, cookies.data.id)
-            console.log(data)
+            await deleteFile(replacedPath, cookies.data.id)
             const name = replacedPath.split("|").pop()
-            console.log(name)
             resultBody.data = name
+
+        } catch (err) {
+            console.log(err)
+            status = 500
+            resultBody = { status: "fail", message: "Something went wrong", data: null}
+        } 
+        res.status(status).send(resultBody)
+    },
+
+    getFileInfo: async (req: NextApiRequest, res: NextApiResponse) => {
+        if (!req.url) return res.status(404).send({ status: "fail", message: "Wrong url", data: null })
+        let status = 200,
+        resultBody = { status: "ok", message: "Files were uploaded successfully", data: null} as responseType
+        const cookies = cookieValidations.verifyUser(req)
+        
+        const replacedPath = getUrlPartFromEnd(req.url, 2)
+        if (cookies.error) return res.status(401).send({ error: cookies.error.user })
+        
+        try {
+            const info = await getFileInfo(replacedPath, cookies.data.id)
+            console.log(info)
+            resultBody.data = info
 
         } catch (err) {
             console.log(err)
