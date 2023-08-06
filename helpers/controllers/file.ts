@@ -67,9 +67,8 @@ export const fileControllers = {
         const cookies = cookieValidations.verifyUser(req)
         
         const replacedPath = getLastUrlPart(req.url)
-       
         
-       
+        
         if (cookies.error) return res.status(401).send({ error: cookies.error.user })
         
         try {
@@ -82,6 +81,7 @@ export const fileControllers = {
             status = 500
             resultBody = { status: "fail", message: "Something went wrong", data: null}
         } 
+        console.log(resultBody)
         res.status(status).send(resultBody)
     },
 

@@ -72,6 +72,7 @@ export function deleteFile(absolutePath: string, userId: string) {
     return new Promise((resolve, reject) => {
         try {
             fs.rmSync(finalPath, { recursive: true, force: true })
+            resolve({ message: "success" })
         } catch (err) {
             reject({ err })
         }

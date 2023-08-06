@@ -99,6 +99,9 @@ function driveReducer(state: stateType, action: ActionType) {
                 state.uploads.push({ file, total, loaded })
             }
             return { ...state }
+        case "delete":
+            state.data.folderContent = state.data.folderContent.filter(e => e.name !== action.payload.target)
+            return { ...state }
         case "clearUploads":
             state.uploads = []
             return { ...state }
@@ -205,14 +208,15 @@ export function useDrive() {
             case "delete":
                 dispatch({ type: "setLoading" })
                  target = action.payload.target
-                
-                res = await fetch(`${appConstants.serverUrl}/api/file/${target}`, {
-                    method: "DELETE",
-                })
+                 res = await fetch(`${appConstants.serverUrl}/api/file/${target}`, {
+                     method: "DELETE",
+                    })
+                    console.log('leci')
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
                 resData = await res.json()
-                console.log(resData)
+                console.log(resData) // TODO: start here
+                dispatch({ type: "delete", payload: { target: resData.data }})
                 break
             case "informations":
                 dispatch({ type: "setLoading" })
