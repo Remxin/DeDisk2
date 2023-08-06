@@ -17,12 +17,14 @@ type Delete = { type: "delete", payload: { target: string }}
 type GetInformations = { type: "informations", payload: { target: string }}
 type ClearData = { type: "clear additional data" }
 type ClearUploads = { type: "clearUploads" }
+type AddToFavourites = { type: "add to favourites", payload: { fileName: string, path: string }}
+type RemoveFromFavourites = { type: "remove from favourites", payload: { fileName: string, path: string }}
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
 
 // _ ACTIONS _
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData | AddToFavourites | RemoveFromFavourites
 
 // --- upload ---
 type UploadProgress = {
@@ -176,6 +178,8 @@ export function useDrive() {
             
                 // tracking upload progress for multiple files
                 for (let i=0; i<files.length; i++) { 
+                    console.log(files[i].size, files[i].name)
+                // dispatch({ type: "uploadingProgress", payload: { file: files[i].name, total: files[i].size, loaded: 0 }})
                 const formData = new FormData()
                 formData.append(`File0`, files[i])
             
@@ -210,12 +214,12 @@ export function useDrive() {
                  target = action.payload.target
                  res = await fetch(`${appConstants.serverUrl}/api/file/${target}`, {
                      method: "DELETE",
-                    })
-                    console.log('leci')
+                })
+                  
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
                 resData = await res.json()
-                console.log(resData) // TODO: start here
+             
                 dispatch({ type: "delete", payload: { target: resData.data }})
                 break
             case "informations":
@@ -234,6 +238,12 @@ export function useDrive() {
             case "clear additional data":
                 dispatch({ type: "clear additional data"})
                 break
+            case "add to favourites":
+                break
+            case "remove from favourites":
+                break
+
+            
 
         }
     

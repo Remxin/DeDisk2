@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import formidable from "formidable";
 import path from "path";
 import fs from "fs"
+import prisma from "@/lib/prisma";
 
 export function readFile(req: NextApiRequest, saveLocally: boolean, userId: string) {
     const options: formidable.Options = {}
@@ -96,4 +97,27 @@ export function getFileInfo(absolutePath: string, userId: string) {
             reject({ err })
         }
     })
+}
+
+export function addToFavourites(path: string, userId: string, fileName: string) {
+    path = path.replaceAll("%20", " ")
+    return new Promise(async (resolve, reject) => {
+        try {
+            await prisma.favourite.create({ data: { name: fileName, path, userId }})
+            resolve({ message: "success" })
+        } catch (err) {
+            reject({ err })
+        }
+    })
+}
+
+export function removeFromFavourites(fileName: string, userId: string, path: string) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await prisma.favourite.deleteMany({ where: { name: fileName, userId, path }})
+            resolve({ message: "success" })
+        } catch(err) {
+            reject({ err })
+        }
+    }) 
 }

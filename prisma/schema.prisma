@@ -20,6 +20,16 @@ model User {
   usedSpace  String   @default("0_B")
   createDate DateTime @default(now())
   shares     Share[]
+  favourites  Favourite[]
+}
+
+model Favourite {
+  id      String    @id @default(uuid())
+  name    String
+  path    String
+  date    DateTime  @default(now())
+  userId  String
+  user    User @relation(fields: [userId], references: [id])
 }
 
 model Share {

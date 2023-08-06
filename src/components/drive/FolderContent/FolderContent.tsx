@@ -20,7 +20,7 @@ import Modal from '../../modals/Modal/Modal'
 import { getBytesString, getStringBytesFromUnit } from '@/helpers/data/size'
 
 // types
-export type ContextActionType = "" | "rename" | "details" | "delete"
+export type ContextActionType = "" | "rename" | "details" | "delete" | "add to favourites" | "share"
 
 
 const FolderContent = () => {
@@ -78,6 +78,10 @@ const FolderContent = () => {
       }
 
       dispatch({ type: "informations", payload: { target }})
+    } else if (contextAction === "add to favourites") {
+
+    } else if (contextAction === "share") {
+      
     }
   }, [contextAction])
 

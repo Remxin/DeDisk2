@@ -26,6 +26,8 @@ const ContextMenuModal = ({ x, y, setVisible }: componentProps) => {
           <ul className={styles.choice_list}>
             <li data-action="rename"><AiFillEdit/> Rename</li>
             <li data-action="details"><AiFillInfoCircle/> Details</li>
+            <li data-action="add to favourites"><AiFillInfoCircle/> Add to favourites</li>
+            <li data-action="share"><AiFillInfoCircle/> Share</li>
             <li data-action="delete"><AiFillDelete/> Delete</li>
           </ul>
         </div>

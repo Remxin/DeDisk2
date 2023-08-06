@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { readFile, renameFile, deleteFile, getFileInfo } from "../fs/file";
+import { readFile, renameFile, deleteFile, getFileInfo, addToFavourites, removeFromFavourites } from "../fs/file";
 import { cookieValidations } from "../validation/cookieValidations";
 import { getLastUrlPart, getUrlPartFromEnd } from "../data/links";
 
@@ -73,7 +73,7 @@ export const fileControllers = {
         
         try {
             await deleteFile(replacedPath, cookies.data.id)
-            const name = replacedPath.split("|").pop()
+            const name = replacedPath.split("|").pop()?.replaceAll("%20", " ")!
             resultBody.data = name
 
         } catch (err) {
@@ -100,10 +100,45 @@ export const fileControllers = {
             resultBody.data = info
 
         } catch (err) {
-            console.log(err)
             status = 500
             resultBody = { status: "fail", message: "Something went wrong", data: null}
         } 
+        res.status(status).send(resultBody)
+    },
+
+    addToFavourites: async (req: NextApiRequest, res: NextApiResponse) => {
+        if (!req.url) return res.status(404).send({ status: "fail", message: "Wrong url", data: null })
+        let status = 200
+        let resultBody = { status: "ok", message: "Files were uploaded successfully", data: null} as responseType
+        const cookies = cookieValidations.verifyUser(req)
+        if (cookies.error) return res.status(401).send({ error: cookies.error.user })
+
+        try {
+            await addToFavourites(req.body.path, cookies.data.id, req.body.fileName)
+            resultBody.data = req.body.fileName
+        } catch (err) {
+            status = 500
+            resultBody = { status: "fail", message: "Something went wrong", data: null}
+        }
+
+        res.status(status).send(resultBody)
+    },
+
+    removeFromFavourites: async (req: NextApiRequest, res: NextApiResponse) => {
+        if (!req.url) return res.status(404).send({ status: "fail", message: "Wrong url", data: null })
+        let status = 200
+        let resultBody = { status: "ok", message: "Files were uploaded successfully", data: null} as responseType
+        const cookies = cookieValidations.verifyUser(req)
+        if (cookies.error) return res.status(401).send({ error: cookies.error.user })
+
+        try {
+            await removeFromFavourites(req.body.fileName, cookies.data.id, req.body.path)
+            resultBody.data = req.body.path
+        } catch (err) {
+            status = 500
+            resultBody = { status: "fail", message: "Something went wrong", data: null}
+        }
+
         res.status(status).send(resultBody)
     }
 }
