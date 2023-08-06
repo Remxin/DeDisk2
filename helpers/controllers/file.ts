@@ -113,9 +113,11 @@ export const fileControllers = {
         const cookies = cookieValidations.verifyUser(req)
         if (cookies.error) return res.status(401).send({ error: cookies.error.user })
 
+        const { path, fileName } = JSON.parse(req.body)
         try {
-            await addToFavourites(req.body.path, cookies.data.id, req.body.fileName)
-            resultBody.data = req.body.fileName
+         
+            await addToFavourites(path, cookies.data.id, fileName)
+            resultBody.data = fileName
         } catch (err) {
             status = 500
             resultBody = { status: "fail", message: "Something went wrong", data: null}

@@ -4,7 +4,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import styles from "./ContextMenuModal.module.css"
 
 // icons
-import { AiFillInfoCircle, AiFillDelete, AiFillEdit } from 'react-icons/ai'
+import { AiFillInfoCircle, AiFillDelete, AiFillEdit, AiFillHeart, AiOutlineShareAlt } from 'react-icons/ai'
 
 // types
 import { ContextActionType } from '../FolderContent/FolderContent'
@@ -26,8 +26,8 @@ const ContextMenuModal = ({ x, y, setVisible }: componentProps) => {
           <ul className={styles.choice_list}>
             <li data-action="rename"><AiFillEdit/> Rename</li>
             <li data-action="details"><AiFillInfoCircle/> Details</li>
-            <li data-action="add to favourites"><AiFillInfoCircle/> Add to favourites</li>
-            <li data-action="share"><AiFillInfoCircle/> Share</li>
+            <li data-action="add to favourites"><AiFillHeart/> Add to favourites</li>
+            <li data-action="share"><AiOutlineShareAlt/> Share</li>
             <li data-action="delete"><AiFillDelete/> Delete</li>
           </ul>
         </div>

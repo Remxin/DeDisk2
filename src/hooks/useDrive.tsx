@@ -19,12 +19,13 @@ type ClearData = { type: "clear additional data" }
 type ClearUploads = { type: "clearUploads" }
 type AddToFavourites = { type: "add to favourites", payload: { fileName: string, path: string }}
 type RemoveFromFavourites = { type: "remove from favourites", payload: { fileName: string, path: string }}
+type GetFavourites = { type: "get favourites" }
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
 
 // _ ACTIONS _
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData | AddToFavourites | RemoveFromFavourites
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData | AddToFavourites | RemoveFromFavourites | GetFavourites
 
 // --- upload ---
 type UploadProgress = {
@@ -61,6 +62,10 @@ interface structureType {
     type: "folder" | "file"
 }
 
+// query props type
+import { QueryProps } from "@/pages/drive"
+// ----------------
+
 export const initialState: stateType = {
     data: {
         searchType: "normal",
@@ -83,7 +88,7 @@ function driveReducer(state: stateType, action: ActionType) {
             return { ...state }
             // return { ...state, data: action.payload, error: "", loading: false}
         case "createDir":
-            if(state.data.folderContent.some((e) => e.name === action.payload)) return { ...state } // ! to prevent calling twice
+            if(state.data.folderContent.some((e) => e.name === action.payload)) return { ...state }
             state.data.folderContent.push({ name: action.payload, type: "folder"})
             return { ...state }
         case "uploadFiles":
@@ -95,9 +100,11 @@ function driveReducer(state: stateType, action: ActionType) {
             const { file, total, loaded } = action.payload
             // __ find existing file progress indicator ___
             const progress = state.uploads.find(e => e.file === action.payload.file)
+            console.log(progress)
             if (progress) {
                 progress.loaded = loaded
             } else {
+                console.log(file, total, loaded)
                 state.uploads.push({ file, total, loaded })
             }
             return { ...state }
@@ -118,6 +125,10 @@ function driveReducer(state: stateType, action: ActionType) {
         case "clear additional data":
             state.data.additionalData = null
             return { ...state }
+        case "get favourites":
+            state.data.searchType = "favourites"
+
+            return { ...state }
         case "setLoading":
             state.loading = true
             return { ...state }
@@ -131,7 +142,7 @@ function driveReducer(state: stateType, action: ActionType) {
 }
 
 
-export function useDrive() {
+export function useDrive(queryProps: QueryProps) {
     const searchParams = useSearchParams()
     const pathName = searchParams.get("path")
     const [state, dispatch] = useReducer(driveReducer, initialState)
@@ -147,7 +158,11 @@ export function useDrive() {
             case "move":
                 dispatch({ type: "setLoading" })
                 res = await fetch(`${appConstants.serverUrl}/api/dir/${action.payload}`)
-                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error })
+                
+                if (res.status !== 200) {
+                    cDisptatch({ type: "move", payload: "/"})
+                    return dispatch({ type: "setError", payload: (await res.json()).error })
+                }
                 resData = await res.json()
                 
                 //@ts-ignore
@@ -178,22 +193,22 @@ export function useDrive() {
             
                 // tracking upload progress for multiple files
                 for (let i=0; i<files.length; i++) { 
-                    console.log(files[i].size, files[i].name)
-                // dispatch({ type: "uploadingProgress", payload: { file: files[i].name, total: files[i].size, loaded: 0 }})
-                const formData = new FormData()
-                formData.append(`File0`, files[i])
-            
-                // ___ adding information about current folder ___
-                formData.append('jsondata', JSON.stringify({ folder }))
+                  
+                    const formData = new FormData()
+                    formData.append(`File0`, files[i])
                     
-                let config = {
-                    onUploadProgress: myUploadProgress(files[i].name)
-                };
-                res = await axios.post(`${appConstants.serverUrl}/api/file`, formData, config)
+                    // ___ adding information about current folder ___
+                    formData.append('jsondata', JSON.stringify({ folder }))
+                    
+                    let config = {
+                        onUploadProgress: myUploadProgress(files[i].name)
+                    };
+                    // dispatch({ type: "uploadingProgress", payload: { file: files[i].name, total: files[i].size, loaded: 0 }})
+                    res = await axios.post(`${appConstants.serverUrl}/api/file`, formData, config)
 
-                if (res.status !== 200) return dispatch({ type: "setError", payload:  res.data.message })
-                resData = res.data
-                dispatch({ type: "uploadFiles", payload: resData.data })
+                    if (res.status !== 200) return dispatch({ type: "setError", payload:  res.data.message })
+                    resData = res.data
+                    dispatch({ type: "uploadFiles", payload: resData.data })
                 }
                 break
             case "rename":
@@ -239,8 +254,35 @@ export function useDrive() {
                 dispatch({ type: "clear additional data"})
                 break
             case "add to favourites":
+                dispatch({ type: "setLoading" })
+                console.log(action.payload)
+
+                res = await fetch(`${appConstants.serverUrl}/api/file/favourites`, {
+                    method: "POST",
+                    body: JSON.stringify({ fileName: action.payload.fileName, path: action.payload.path })
+                })
+
+                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
+                resData = await res.json()
+                console.log(resData)
+                dispatch({ type: "add to favourites", payload: resData.data})
                 break
             case "remove from favourites":
+                dispatch({ type: "setLoading" })
+              
+
+                res = await fetch(`${appConstants.serverUrl}/api/file/favourites/remove`, {
+                    method: "POST",
+                    body: JSON.stringify({ fileName: action.payload.fileName, path: action.payload.path })
+                })
+
+                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
+                resData = await res.json()
+               
+                dispatch({ type: "remove from favourites", payload: resData.data})
+                break
+            case "get favourites":
+                dispatch({ type: "get favourites" })
                 break
 
             
@@ -251,11 +293,15 @@ export function useDrive() {
     const customDispatch = useCallback(cDisptatch, [])
 
     useEffect(() => {
-        if (pathName === null) {
+        if (queryProps?.search === "favourites") {
+            customDispatch({ type: "get favourites" })
+            return
+        }
+        if (!queryProps?.path) {
             customDispatch({ type: "move", payload: "/"})
         } else {
-            customDispatch({ type: "move", payload: "/" + pathName})
+            customDispatch({ type: "move", payload: "/" + queryProps.path})
         }
-    }, [pathName])
+    }, [queryProps?.search, queryProps?.path])
     return { data: state, dispatch: customDispatch }
 }

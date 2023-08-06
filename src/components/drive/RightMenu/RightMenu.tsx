@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 
 // icons
-import { BsArrowRightCircle, BsPlusSquareFill } from "react-icons/bs"
+import { BsArrowRightCircle, BsPlusSquareFill, BsFillHeartFill } from "react-icons/bs"
 import { BiSolidStar, BiSolidTime, BiSolidShareAlt } from "react-icons/bi"
 
 // components
@@ -114,7 +114,7 @@ const RightMenu = () => {
                     </div>
                     <motion.div variants={optionsListVariants} initial="initial" animate="animate" className={styles.options_container}>
                         <motion.button style={{ backgroundColor: selected === "My drive" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("My drive")}><BiSolidStar/>My drive</motion.button>
-                        <motion.button style={{ backgroundColor: selected === "Last" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Last")}><BiSolidTime/>Last</motion.button>
+                        <motion.button style={{ backgroundColor: selected === "Favourites" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Favourites")}><BsFillHeartFill/>Favourites</motion.button>
                         <motion.button style={{ backgroundColor: selected === "Shared to me" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Shared to me")}><BiSolidShareAlt/>Shared to me</motion.button>
                     </motion.div>
                     <FreeSpace plan="15_GB" usedSpace='5_GB' />

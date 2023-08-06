@@ -24,8 +24,8 @@ export type ContextActionType = "" | "rename" | "details" | "delete" | "add to f
 
 
 const FolderContent = () => {
-  const { createFolder, setCreateFolder, data, dispatch } = useContext(DriveContext)
-
+  const { createFolder, setCreateFolder, data, dispatch, queryProps } = useContext(DriveContext)
+  console.log(queryProps)
   // edit object
   const content = data.data.folderContent
   const folderInputRef = useRef() as MutableRefObject<HTMLInputElement>
@@ -78,7 +78,9 @@ const FolderContent = () => {
       }
 
       dispatch({ type: "informations", payload: { target }})
+      
     } else if (contextAction === "add to favourites") {
+      dispatch({ type: "add to favourites", payload: { path: data.data.currentFolder, fileName: customContext.value }})
 
     } else if (contextAction === "share") {
       
