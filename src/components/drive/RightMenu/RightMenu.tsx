@@ -124,7 +124,7 @@ const RightMenu = () => {
                 </>
             )
                 : null}
-            <Modal visible={showChoosePlan} setVisible={setShowChoosePlan} className={styles.plan_modal}>
+            <Modal visible={showChoosePlan} setVisible={setShowChoosePlan} className={styles.plan_modal} size={{ height: 300, width: 300 }}>
                 <h2>Choose plan </h2>
                 <div className={styles.plan_cards}>
                     <PlanCard plan="15GB" price="10zł" />

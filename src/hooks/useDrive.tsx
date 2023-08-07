@@ -17,9 +17,10 @@ type Delete = { type: "delete", payload: { target: string }}
 type GetInformations = { type: "informations", payload: { target: string }}
 type ClearData = { type: "clear additional data" }
 type ClearUploads = { type: "clearUploads" }
+
 type AddToFavourites = { type: "add to favourites", payload: { fileName: string, path: string }}
 type RemoveFromFavourites = { type: "remove from favourites", payload: { fileName: string, path: string }}
-type GetFavourites = { type: "get favourites" }
+type GetFavourites = { type: "get favourites", payload: favouriteStructureType[] }
 
 type SetError = { type: "setError", payload: string}
 type SetLoading = { type: "setLoading", payload?: null}
@@ -47,9 +48,9 @@ type AdditionalData = null | ({ type: "file data" } & FileInformations)
 
 export interface stateType {
     data: {
-        searchType: "normal" | "favourites" | "shared"
+        searchType: "" | "favourites" | "shared" // empty string is normal search
         currentFolder: string
-        folderContent: structureType[]
+        folderContent: structureType[] | favouriteStructureType[]
         additionalData: AdditionalData
     },
     uploads: UploadProgress[],
@@ -61,6 +62,12 @@ interface structureType {
     name: string
     type: "folder" | "file"
 }
+interface favouriteStructureType  {
+    name: string
+    type: "folder" | "file"
+    date: string
+    path: string
+}
 
 // query props type
 import { QueryProps } from "@/pages/drive"
@@ -68,7 +75,7 @@ import { QueryProps } from "@/pages/drive"
 
 export const initialState: stateType = {
     data: {
-        searchType: "normal",
+        searchType: "",
         currentFolder: "",
         folderContent: [],
         additionalData: null
@@ -83,6 +90,7 @@ function driveReducer(state: stateType, action: ActionType) {
         case "move":
             // @ts-ignore
             state.data = action.payload
+            state.data.searchType = ""
             state.error = ""
             state.loading = false
             return { ...state }
@@ -127,6 +135,7 @@ function driveReducer(state: stateType, action: ActionType) {
             return { ...state }
         case "get favourites":
             state.data.searchType = "favourites"
+            state.data.folderContent = action.payload
 
             return { ...state }
         case "setLoading":
@@ -144,7 +153,7 @@ function driveReducer(state: stateType, action: ActionType) {
 
 export function useDrive(queryProps: QueryProps) {
     const searchParams = useSearchParams()
-    const pathName = searchParams.get("path")
+   
     const [state, dispatch] = useReducer(driveReducer, initialState)
     
 
@@ -282,7 +291,14 @@ export function useDrive(queryProps: QueryProps) {
                 dispatch({ type: "remove from favourites", payload: resData.data})
                 break
             case "get favourites":
-                dispatch({ type: "get favourites" })
+                res = await fetch(`${appConstants.serverUrl}/api/file/favourites`, {
+                    method: "GET",
+                })
+
+                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
+                resData = await res.json()
+                console.log(resData)
+                dispatch({ type: "get favourites", payload: resData.data })
                 break
 
             
@@ -294,7 +310,7 @@ export function useDrive(queryProps: QueryProps) {
 
     useEffect(() => {
         if (queryProps?.search === "favourites") {
-            customDispatch({ type: "get favourites" })
+            customDispatch({ type: "get favourites", payload: [] })
             return
         }
         if (!queryProps?.path) {

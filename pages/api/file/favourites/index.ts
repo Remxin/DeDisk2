@@ -8,6 +8,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
 
-    if (req.method !== "POST") return res.status(405).send({ status: "fail", message: "method not allowed", data: null})
-    fileControllers.addToFavourites(req, res)
+    if (req.method === "POST") return fileControllers.addToFavourites(req, res) 
+    else if (req.method === "GET") return fileControllers.getFavourites(req, res)
+    else return res.status(405).send({ status: "fail", message: "method not allowed", data: null})
 }

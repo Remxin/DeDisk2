@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { readFile, renameFile, deleteFile, getFileInfo, addToFavourites, removeFromFavourites } from "../fs/file";
+import { readFile, renameFile, deleteFile, getFileInfo, addToFavourites, removeFromFavourites, getFavourites } from "../fs/file";
 import { cookieValidations } from "../validation/cookieValidations";
 import { getLastUrlPart, getUrlPartFromEnd } from "../data/links";
+import prisma from "@/lib/prisma";
 
 
 
@@ -103,6 +104,28 @@ export const fileControllers = {
             status = 500
             resultBody = { status: "fail", message: "Something went wrong", data: null}
         } 
+        res.status(status).send(resultBody)
+    },
+
+    getFavourites: async (req: NextApiRequest, res: NextApiResponse) => {
+        if (!req.url) return res.status(404).send({ status: "fail", message: "Wrong url", data: null })
+        let status = 200
+        let resultBody = { status: "ok", message: "Files were uploaded successfully", data: null} as responseType
+        const cookies = cookieValidations.verifyUser(req)
+        if (cookies.error) return res.status(401).send({ error: cookies.error.user })
+
+       
+        try {
+         const favs = await getFavourites(cookies.data.id)
+       
+         // @ts-ignore
+         resultBody.data = favs.data 
+           
+        } catch (err) {
+            status = 500
+            resultBody = { status: "fail", message: "Something went wrong", data: null}
+        }
+
         res.status(status).send(resultBody)
     },
 

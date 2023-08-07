@@ -99,6 +99,18 @@ export function getFileInfo(absolutePath: string, userId: string) {
     })
 }
 
+export function getFavourites(userId: string) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const favs = await prisma.favourite.findMany({ where: { userId }})
+            resolve({ data: favs })
+        } catch (err) {
+            reject({ err })
+        }
+
+    })
+}
+
 export function addToFavourites(path: string, userId: string, fileName: string) {
     path = path.replaceAll("%20", " ")
     return new Promise(async (resolve, reject) => {

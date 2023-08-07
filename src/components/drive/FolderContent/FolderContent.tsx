@@ -5,6 +5,7 @@ import { BiSolidFolder } from "react-icons/bi"
 
 // components
 import ClickableInstance from '../ClickableInstance/ClickableInstance'
+import BasicInstance from "../ClickableInstance/BasicInstance"
 import CurrentFolderIndicator from '../CurrentFolderIndicator/CurrentFolderIndicator'
 import ContextMenuModal from '../ContextMenuModal/ContextMenuModal'
 
@@ -25,7 +26,7 @@ export type ContextActionType = "" | "rename" | "details" | "delete" | "add to f
 
 const FolderContent = () => {
   const { createFolder, setCreateFolder, data, dispatch, queryProps } = useContext(DriveContext)
-  console.log(queryProps)
+
   // edit object
   const content = data.data.folderContent
   const folderInputRef = useRef() as MutableRefObject<HTMLInputElement>
@@ -87,7 +88,7 @@ const FolderContent = () => {
     }
   }, [contextAction])
 
-
+console.log(data.data.searchType)
 
 
   // ___ for folder creation ___
@@ -114,9 +115,12 @@ const FolderContent = () => {
     <div className={styles.container}>
       <CurrentFolderIndicator/>
         <ul className={styles.element_list}>
-        {content.map((c, i) => (
+        {data.data.searchType === "" && content.map((c, i) => (
           //@ts-ignore
            <ClickableInstance name={c.name} type={c.type} key={i} handleRightClick={handleRightClick} edit={contextAction === "rename" && customContext.value === c.name} handleInputBlur={resetContextActions}/>
+        ))}
+        { data.data.searchType === "favourites" && content.map((c, i) => (
+          <BasicInstance name={c.name} type={c.type} key={i}/>
         ))}
         {createFolder ? <li className={styles.element}> <BiSolidFolder/><input placeholder='Folder name' ref={folderInputRef} onBlur={handleBlur} onKeyDown={handleKeyEnter}/></li> : null}
         </ul>
