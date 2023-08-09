@@ -25,6 +25,7 @@ model User {
 
 model Favourite {
   id      String    @id @default(uuid())
+  type    String
   name    String
   path    String
   date    DateTime  @default(now())

@@ -1,7 +1,7 @@
 import Navbar from '@/src/layout/Navbar/Navbar'
 
 // components
-import RightMenu from '@/src/components/drive/RightMenu/RightMenu'
+import LeftMenu from '@/src/components/drive/LeftMenu/LeftMenu'
 import FolderContent from '@/src/components/drive/FolderContent/FolderContent'
 import UploadsIndicator from '@/src/components/drive/UploadsIndicator/UploadsIndicator'
 
@@ -28,7 +28,7 @@ const Path = (props: QueryProps) => {
         <DriveContextProvider queryProps={props}>
             <Navbar />
             <div className={styles.drive}>
-                <RightMenu />
+                <LeftMenu />
                 <FolderContent/>
             </div>
             <UploadsIndicator/>

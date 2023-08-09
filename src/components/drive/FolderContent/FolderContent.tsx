@@ -81,7 +81,9 @@ const FolderContent = () => {
       dispatch({ type: "informations", payload: { target }})
       
     } else if (contextAction === "add to favourites") {
-      dispatch({ type: "add to favourites", payload: { path: data.data.currentFolder, fileName: customContext.value }})
+      const instance = data.data.folderContent.find(e => e.name === customContext.value)
+      if (!instance) return
+      dispatch({ type: "add to favourites", payload: { path: data.data.currentFolder, fileName: instance.name, type: instance.type }})
 
     } else if (contextAction === "share") {
       
@@ -120,7 +122,8 @@ console.log(data.data.searchType)
            <ClickableInstance name={c.name} type={c.type} key={i} handleRightClick={handleRightClick} edit={contextAction === "rename" && customContext.value === c.name} handleInputBlur={resetContextActions}/>
         ))}
         { data.data.searchType === "favourites" && content.map((c, i) => (
-          <BasicInstance name={c.name} type={c.type} key={i}/>
+          //@ts-ignore
+          <BasicInstance name={c.name} type={c.type} date={c.date} path={c.path} key={i}/>
         ))}
         {createFolder ? <li className={styles.element}> <BiSolidFolder/><input placeholder='Folder name' ref={folderInputRef} onBlur={handleBlur} onKeyDown={handleKeyEnter}/></li> : null}
         </ul>

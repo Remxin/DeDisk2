@@ -111,11 +111,11 @@ export function getFavourites(userId: string) {
     })
 }
 
-export function addToFavourites(path: string, userId: string, fileName: string) {
+export function addToFavourites(path: string, userId: string, fileName: string, type: string) {
     path = path.replaceAll("%20", " ")
     return new Promise(async (resolve, reject) => {
         try {
-            await prisma.favourite.create({ data: { name: fileName, path, userId }})
+            await prisma.favourite.create({ data: { name: fileName, path, userId, type }})
             resolve({ message: "success" })
         } catch (err) {
             reject({ err })

@@ -18,7 +18,7 @@ type GetInformations = { type: "informations", payload: { target: string }}
 type ClearData = { type: "clear additional data" }
 type ClearUploads = { type: "clearUploads" }
 
-type AddToFavourites = { type: "add to favourites", payload: { fileName: string, path: string }}
+type AddToFavourites = { type: "add to favourites", payload: { fileName: string, path: string, type: "file" | "folder" }}
 type RemoveFromFavourites = { type: "remove from favourites", payload: { fileName: string, path: string }}
 type GetFavourites = { type: "get favourites", payload: favouriteStructureType[] }
 
@@ -97,10 +97,12 @@ function driveReducer(state: stateType, action: ActionType) {
             // return { ...state, data: action.payload, error: "", loading: false}
         case "createDir":
             if(state.data.folderContent.some((e) => e.name === action.payload)) return { ...state }
+            //@ts-ignore`
             state.data.folderContent.push({ name: action.payload, type: "folder"})
             return { ...state }
-        case "uploadFiles":
-            for (let fileName of action.payload) {
+            case "uploadFiles":
+                for (let fileName of action.payload) {
+                //@ts-ignore`
                 state.data.folderContent.push({ name: fileName, type: "file"})
             }
             return { ...state }
@@ -268,7 +270,7 @@ export function useDrive(queryProps: QueryProps) {
 
                 res = await fetch(`${appConstants.serverUrl}/api/file/favourites`, {
                     method: "POST",
-                    body: JSON.stringify({ fileName: action.payload.fileName, path: action.payload.path })
+                    body: JSON.stringify({ fileName: action.payload.fileName, path: action.payload.path, type: action.payload.type })
                 })
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })

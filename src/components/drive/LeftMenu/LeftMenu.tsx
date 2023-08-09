@@ -12,77 +12,33 @@ import PlanCard from '../PlanCard/PlanCard'
 import CreateMenu from '../CreateMenu/CreateMenu'
 
 // styles
-import styles from "./RightMenu.module.css"
+import styles from "./LeftMenu.module.css"
 
 // animations
 import { motion, useAnimationControls } from "framer-motion"
 
+// context
+import { DriveContext } from '@/src/contexts/DriveContext'
+
+// navigation
+import Link from 'next/link'
+
 
 // variants
-const menuVariants = {
-    shrunk: {
-        width: 80
-    },
-
-    extended: {
-        width: 200
-    }
-}
-
-const arrowVariants = {
-    normal: {
-        rotate: 0,
-        transition: {
-            duration: .2
-        }
-    },
-
-    rotate: {
-        rotate: 180,
-        transition: {
-            duration: .2
-        }
-    }
-}
-
-const optionsListVariants = {
-    initial: {},
-    animate: {
-        transition: {
-            staggerChildren: .1
-        }
-    }
-}
-
-const optionVariants = {
-    initial: {
-        opacity: 0,
-        left: -10
-    },
-    animate: {
-        opacity: 1,
-        left: 0
-    }
-}
-
-const buttonVariants = {
-    initial: {
-        opacity: 0
-    },
-    animate: {
-        opacity: 1,
-        transition: {
-            delay: .5
-        }
-    }
-}
+import { menuVariants, arrowVariants, optionVariants, optionsListVariants, buttonVariants } from './variants'
+import { appConstants } from '@/src/constants/appConstants'
 
 
 const RightMenu = () => {
+    // for additional data
+    const { data } = useContext(DriveContext)
+
+    // for animations
     const menuControlls = useAnimationControls()
     const arrowControlls = useAnimationControls()
 
-    const [selected, setSelected] = useState("My drive")
+    const selected = data.data.searchType
+
     const [extended, setExtended] = useState(false)
     const [showNew, setShowNew] = useState(false)
     const [showChoosePlan, setShowChoosePlan] = useState(false)
@@ -99,6 +55,8 @@ const RightMenu = () => {
         }
     }
 
+    
+
     return (
         <motion.div variants={menuVariants} className={styles.container} initial="shrunk" animate={menuControlls}>
             <motion.button onClick={manageSize} className={styles.arrow_button} variants={arrowVariants} initial="normal" animate={arrowControlls}>
@@ -113,9 +71,9 @@ const RightMenu = () => {
                         <CreateMenu visible={showNew} setVisible={setShowNew} />
                     </div>
                     <motion.div variants={optionsListVariants} initial="initial" animate="animate" className={styles.options_container}>
-                        <motion.button style={{ backgroundColor: selected === "My drive" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("My drive")}><BiSolidStar/>My drive</motion.button>
-                        <motion.button style={{ backgroundColor: selected === "Favourites" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Favourites")}><BsFillHeartFill/>Favourites</motion.button>
-                        <motion.button style={{ backgroundColor: selected === "Shared to me" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => setSelected("Shared to me")}><BiSolidShareAlt/>Shared to me</motion.button>
+                        <Link href={`${appConstants.clientUrl}/drive`}><motion.button style={{ backgroundColor: selected === "" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => null}><BiSolidStar/>My drive</motion.button></Link>
+                        <Link href={`${appConstants.clientUrl}/drive?search=favourites`}><motion.button style={{ backgroundColor: selected === "favourites" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => null}><BsFillHeartFill/>Favourites</motion.button></Link>
+                        <Link href={`${appConstants.clientUrl}/drive?search=shared`}><motion.button style={{ backgroundColor: selected === "shared" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => null}><BiSolidShareAlt/>Shared to me</motion.button></Link>
                     </motion.div>
                     <FreeSpace plan="15_GB" usedSpace='5_GB' />
                     <motion.div variants={buttonVariants} initial="initial" animate="animate">
