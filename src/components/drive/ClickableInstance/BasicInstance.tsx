@@ -14,6 +14,9 @@ import styles from "./ClickableInstance.module.css"
 import { DriveContext } from '@/src/contexts/DriveContext'
 import { appConstants } from '@/src/constants/appConstants'
 
+// helpers
+import { getRedirectUrl } from './helpers'
+// types
 type componentProps = {
     name: string
     type: "folder" | "file",
@@ -22,19 +25,15 @@ type componentProps = {
 }
 
 const ClickableInstance = ({ name, type, date, path }: componentProps) => {
-  const { data } = useContext(DriveContext)
+  const { dispatch, data} = useContext(DriveContext)
 
-  function handleClick() {
-    if (type !== "folder") return
-    const newPath = `${data.data.currentFolder}${name}`
-    // TODO: change path 
-
-  }
+  const redirectPath = getRedirectUrl(path, "")
+ 
   return (
     <>
       {/* @ts-ignore */}
-      <li className={styles.element} onClick={handleClick}>
-        <Link href={`${appConstants.clientUrl}/drive?path=${path}`} className={styles.favourite}>
+      <li className={styles.element}>
+        <Link href={`${appConstants.clientUrl}/drive?path=${redirectPath}`} className={styles.favourite}>
           <p className={styles.name}>{type === "folder" ? <BiSolidFolder/> : getFileIcon(name)} {name}</p>
           <p className={styles.path}>folder: {path}</p>
           <p className={styles.date}>{new Date(date).toDateString()}</p>

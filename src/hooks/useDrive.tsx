@@ -88,6 +88,7 @@ export const initialState: stateType = {
 function driveReducer(state: stateType, action: ActionType) {
     switch (action.type) {
         case "move":
+            console.log(action.payload)
             // @ts-ignore
             state.data = action.payload
             state.data.searchType = ""
@@ -110,11 +111,11 @@ function driveReducer(state: stateType, action: ActionType) {
             const { file, total, loaded } = action.payload
             // __ find existing file progress indicator ___
             const progress = state.uploads.find(e => e.file === action.payload.file)
-            console.log(progress)
+         
             if (progress) {
                 progress.loaded = loaded
             } else {
-                console.log(file, total, loaded)
+           
                 state.uploads.push({ file, total, loaded })
             }
             return { ...state }
@@ -175,7 +176,7 @@ export function useDrive(queryProps: QueryProps) {
                     return dispatch({ type: "setError", payload: (await res.json()).error })
                 }
                 resData = await res.json()
-                
+                console.log(action.payload)
                 //@ts-ignore
                 dispatch({ ...action, payload: {currentFolder: action.payload, folderContent: resData.data}})
                 break
@@ -251,14 +252,14 @@ export function useDrive(queryProps: QueryProps) {
             case "informations":
                 dispatch({ type: "setLoading" })
                 target = action.payload.target
-                console.log(target)
+        
 
                 res = await fetch(`${appConstants.serverUrl}/api/file/${target}/informations`, {
                     method: "GET"
                 })
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
                 resData = await res.json()
-                console.log(resData)
+          
                 dispatch({ type: "informations", payload: resData.data})
                 break
             case "clear additional data":
@@ -266,7 +267,7 @@ export function useDrive(queryProps: QueryProps) {
                 break
             case "add to favourites":
                 dispatch({ type: "setLoading" })
-                console.log(action.payload)
+            
 
                 res = await fetch(`${appConstants.serverUrl}/api/file/favourites`, {
                     method: "POST",
@@ -275,7 +276,7 @@ export function useDrive(queryProps: QueryProps) {
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
                 resData = await res.json()
-                console.log(resData)
+               
                 dispatch({ type: "add to favourites", payload: resData.data})
                 break
             case "remove from favourites":
@@ -299,7 +300,7 @@ export function useDrive(queryProps: QueryProps) {
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message })
                 resData = await res.json()
-                console.log(resData)
+            
                 dispatch({ type: "get favourites", payload: resData.data })
                 break
 
@@ -318,7 +319,7 @@ export function useDrive(queryProps: QueryProps) {
         if (!queryProps?.path) {
             customDispatch({ type: "move", payload: "/"})
         } else {
-            customDispatch({ type: "move", payload: "/" + queryProps.path})
+            customDispatch({ type: "move", payload: queryProps.path})
         }
     }, [queryProps?.search, queryProps?.path])
     return { data: state, dispatch: customDispatch }

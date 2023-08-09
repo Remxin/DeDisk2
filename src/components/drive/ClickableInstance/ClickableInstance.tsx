@@ -10,9 +10,17 @@ import ContextMenuModal from '../ContextMenuModal/ContextMenuModal'
 // styles
 import styles from "./ClickableInstance.module.css"
 
+// navigation
+import Link from 'next/link'
+
 // context
 import { DriveContext } from '@/src/contexts/DriveContext'
+import { appConstants } from '@/src/constants/appConstants'
 
+// helpers
+import { getRedirectUrl } from './helpers'
+
+// types
 type componentProps = {
     name: string
     type: "folder" | "file",
@@ -23,9 +31,13 @@ type componentProps = {
 
 const ClickableInstance = ({ name, type, handleRightClick, edit, handleInputBlur }: componentProps) => {
   const { dispatch, data} = useContext(DriveContext)
-  // const [newName, setNewName] = useState(name)
+  
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>
- 
+
+  // for navigation
+  const moveUrl = getRedirectUrl(data.data.currentFolder, name)
+  // console.log(moveUrl, data.data.currentFolder)
+
   useEffect(() => {
     if (!inputRef.current) return
     if (edit) inputRef.current.focus()
@@ -38,25 +50,22 @@ const ClickableInstance = ({ name, type, handleRightClick, edit, handleInputBlur
 
     if (inputRef.current.value === name || !inputRef.current.value) return handleInputBlur()
 
+    
     // TODO: handle instance name validation
     dispatch({ type: "rename", payload: { name, newName: inputRef.current.value, currentLocation: data.data.currentFolder }})
     handleInputBlur()
   }
 
-  function handleClick() {
-    if (type !== "folder" || edit) return
-    const newPath = `${data.data.currentFolder}${name}`
-    dispatch({ type: "move", payload: newPath})
-  }
+ 
   return (
-    <>
+    <Link href={`${appConstants.clientUrl}/drive?path=${moveUrl}`}>
       {/* @ts-ignore */}
-      <li className={styles.element} onClick={handleClick} onContextMenu={(e) => handleRightClick(e, name)}>
+      <li className={styles.element} onContextMenu={(e) => handleRightClick(e, name)}>
         {type === "folder" ? <BiSolidFolder/> : getFileIcon(name)}
         {edit ? <input placeholder='new name' onKeyDown={handleKeyPress} defaultValue={name} ref={inputRef} onBlur={handleInputBlur}/> : <p>{name}</p>}
       </li>
-      
-    </>
+    </Link>
+    
   )
 }
 

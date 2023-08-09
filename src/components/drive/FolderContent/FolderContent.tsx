@@ -90,7 +90,6 @@ const FolderContent = () => {
     }
   }, [contextAction])
 
-console.log(data.data.searchType)
 
 
   // ___ for folder creation ___
