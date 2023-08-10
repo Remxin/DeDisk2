@@ -25,11 +25,15 @@ export const dirControllers = {
     listDirContent: async (req: NextApiRequest, res: NextApiResponse) => {
         if (!req.url) return res.send({ error: { server: "Wrong url provided"}})
         const token = cookieValidations.verifyUser(req)
+        
         let pathName = getLastUrlPart(req.url)
+        pathName = pathName.replaceAll("%7C", "/")
+        console.log(pathName)
         if (token.error) return res.status(403).send(token.error)
 
         try {
             const dirList = await listDir(token.data.id, pathName)
+            console.log(dirList)
             return res.send({ data: dirList})
         } catch (err) {
             return res.status(500).send({ error: { server: "Unknown server error" } })

@@ -5,6 +5,9 @@ import axios from "axios"
 // router
 import { useSearchParams } from "next/navigation"
 
+// helpers
+import { getOriginalPath, getModifiedPath } from "../helpers/path"
+
 // --- actions ---
 type Move = { type: "move", payload: string}
 type CreateDir = { type: "createDir", payload: string}
@@ -88,7 +91,11 @@ export const initialState: stateType = {
 function driveReducer(state: stateType, action: ActionType) {
     switch (action.type) {
         case "move":
-            console.log(action.payload)
+        
+            // @ts-ignore
+            let originalPath = getOriginalPath(action.payload.currentFolder)
+            // @ts-ignore
+            action.payload.currentFolder = originalPath
             // @ts-ignore
             state.data = action.payload
             state.data.searchType = ""
@@ -169,6 +176,7 @@ export function useDrive(queryProps: QueryProps) {
         switch(action.type) {
             case "move":
                 dispatch({ type: "setLoading" })
+                
                 res = await fetch(`${appConstants.serverUrl}/api/dir/${action.payload}`)
                 
                 if (res.status !== 200) {
@@ -176,7 +184,7 @@ export function useDrive(queryProps: QueryProps) {
                     return dispatch({ type: "setError", payload: (await res.json()).error })
                 }
                 resData = await res.json()
-                console.log(action.payload)
+           
                 //@ts-ignore
                 dispatch({ ...action, payload: {currentFolder: action.payload, folderContent: resData.data}})
                 break
@@ -319,7 +327,9 @@ export function useDrive(queryProps: QueryProps) {
         if (!queryProps?.path) {
             customDispatch({ type: "move", payload: "/"})
         } else {
-            customDispatch({ type: "move", payload: queryProps.path})
+            let url = getModifiedPath(queryProps.path)
+         
+            customDispatch({ type: "move", payload: url})
         }
     }, [queryProps?.search, queryProps?.path])
     return { data: state, dispatch: customDispatch }
