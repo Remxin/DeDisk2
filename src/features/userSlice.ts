@@ -28,7 +28,9 @@ export const registerUser = createAsyncThunk(
             }
             //@ts-ignore
             const res = await fetch(`${appConstants.serverUrl}/api/user/register`, config)
+  
             const resData = await res.json()
+
             if (resData.error) {
                 return rejectWithValue(resData.error?.server)
             }

@@ -8,13 +8,14 @@ import UploadsIndicator from '@/src/components/drive/UploadsIndicator/UploadsInd
 // styles
 import styles from "@/styles/drive/Drive.module.css"
 
-// hooks
-import { useDrive } from '@/src/hooks/useDrive'
+// constants
+import { appConstants } from '@/src/constants/appConstants'
 
 // context
 import DriveContextProvider from '@/src/contexts/DriveContext'
-import { useSearchParams } from "next/navigation"
-import { GetStaticProps } from 'next'
+
+// helpers
+import * as cookie from "cookie"
 
 // types
 export type QueryProps = {
@@ -38,6 +39,26 @@ const Path = (props: QueryProps) => {
 
 
 export async function getServerSideProps(context: any) {
+    // user authentication
+    //@ts-ignore
+  const parsedCookies = cookie.parse(context.req.headers.cookie);
+  const res = await fetch(`${appConstants.serverUrl}/api/user/verify`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "cookie": `userToken=${parsedCookies.userToken}`
+    }
+  })
+
+  if (res.status !== 200) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false
+      },
+    }
+  }
+    // functionality
     //@ts-ignore
     const { params } = context
 

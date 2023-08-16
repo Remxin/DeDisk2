@@ -10,10 +10,11 @@ type componentProps = {
     parentError?: string,
     setParentError?: Dispatch<string>
     validationFunction?: (text: string) => string,
-    secure?: boolean
+    secure?: boolean,
+    key?: string | number
 }
 
-const Input = React.forwardRef<HTMLInputElement, componentProps>(({ style, inputStyle, parentError = "", placeholder = "", validationFunction, setParentError, secure }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, componentProps>(({ style, inputStyle, parentError = "", placeholder = "", validationFunction, setParentError, secure, key = "" }, ref) => {
     const [error, setError] = useState(parentError)
     const [success, setSuccess] = useState(false)
     const [active, setActive] = useState(false)
@@ -54,7 +55,7 @@ const Input = React.forwardRef<HTMLInputElement, componentProps>(({ style, input
 
 
     return (
-        <div className={inputStyles.input_container} style={{ marginBottom: error ? 42 : 0 }}>
+        <div className={inputStyles.input_container} style={{ marginBottom: error ? 42 : 0 }} key={key}>
             {active ? <p className={inputStyles.active_placeholder_text}>{placeholder}</p> : null}
             <input className={inputStyles.input} ref={ref} placeholder={placeholder} onBlur={handleBlur} onInput={handleInput} style={{ borderColor: behaviorColor }} type={secure ? "password" : "text"} />
             {error ? <p className={inputStyles.error_text}>{error}</p> : null}

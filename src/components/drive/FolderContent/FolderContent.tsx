@@ -9,6 +9,8 @@ import BasicInstance from "../ClickableInstance/BasicInstance"
 import CurrentFolderIndicator from '../CurrentFolderIndicator/CurrentFolderIndicator'
 import ContextMenuModal from '../ContextMenuModal/ContextMenuModal'
 
+import ShareModal from './modules/ShareModal'
+
 // context
 import { DriveContext } from '@/src/contexts/DriveContext'
 
@@ -58,8 +60,10 @@ const FolderContent = () => {
     }
 
   }
+  // for sharing 
+  const [showShareMenu, setShowShareMenu] = useState(false)
 
-  // handle delete and get info
+  // handle delete, get info, favourites and share
   useEffect(() => {
     if (!contextAction || contextAction === "rename" || !customContext.value) return
 
@@ -85,9 +89,7 @@ const FolderContent = () => {
       if (!instance) return
       dispatch({ type: "add to favourites", payload: { path: data.data.currentFolder, fileName: instance.name, type: instance.type }})
 
-    } else if (contextAction === "share") {
-      
-    }
+    } else if (contextAction === "share") return setShowShareMenu(true)
   }, [contextAction])
 
 
@@ -161,6 +163,8 @@ const FolderContent = () => {
             </tbody>
           </table>
         </Modal>
+        <ShareModal visible={showShareMenu} setVisible={setShowShareMenu} targetName={customContext.value}/>
+        
     </div>
   )
 }

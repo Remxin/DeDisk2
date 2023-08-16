@@ -47,7 +47,7 @@ type FileInformations = {
     birthtime: Date
     extension: string
 }
-type AdditionalData = null | ({ type: "file data" } & FileInformations)
+export type AdditionalData = null | ({ type: "file data" } & FileInformations)
 
 export interface stateType {
     data: {

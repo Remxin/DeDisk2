@@ -5,8 +5,15 @@ import styles from '@/styles/home/Home.module.css'
 
 // components
 import Navbar from '@/src/layout/Navbar/Navbar'
-import { AiFillFolder } from "react-icons/ai"
 import Link from 'next/link'
+
+// constants
+import { appConstants } from '@/src/constants/appConstants'
+
+// helpers
+import { getCookie } from '@/helpers/data/cookies'
+import { GetServerSidePropsContext } from 'next'
+import * as cookie from "cookie"
 
 // variables
 const inter = Inter({ subsets: ['latin'] })
@@ -24,4 +31,31 @@ export default function Home() {
       </main>
     </>
   )
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  //@ts-ignore
+  const parsedCookies = cookie.parse(context.req.headers.cookie);
+  const res = await fetch(`${appConstants.serverUrl}/api/user/verify`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "cookie": `userToken=${parsedCookies.userToken}`
+    }
+  })
+
+  if (res.status !== 200) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false
+      },
+    }
+  }
+
+  return {
+    props: {
+      data: null
+    }
+  }
 }

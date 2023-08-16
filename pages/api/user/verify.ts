@@ -5,6 +5,8 @@ import prisma from '@/lib/prisma'
 import { serialize } from 'cookie'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { cookies } from 'next/dist/client/components/headers'
+
 // type Data = {
 //     error?: {
 //         server?: string
@@ -33,7 +35,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method !== "POST") return res.status(405).send({ error: { server: "Wrong method" } })
-
+    
     const token = cookieValidations.verifyUser(req)
     if (token.error) return res.status(401).send(token.error)
 
