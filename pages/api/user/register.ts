@@ -1,5 +1,7 @@
+import { calculateSeconds } from '@/helpers/data/date'
 import { hashHelpers } from '@/helpers/data/hashHelpers'
 import { signToken } from '@/helpers/data/token'
+import { createUserHomeDir } from '@/helpers/fs/dir'
 import prisma from '@/lib/prisma'
 import { serialize } from 'cookie'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -13,6 +15,7 @@ type Data = {
         email: string
         name: string
         plan: string
+        usedSpace: string
     }
 }
 
@@ -36,13 +39,16 @@ export default async function handler(
     try {
 
         const user = await prisma.user.create({ data: { name, email, password: hashedPass } })
+        // console.log(name, email, password, hashedPass) 
         const token = signToken({ id: user.id }, "user", "5d")
-        console.log(token)
-        const cookie = serialize("user-token", token, { httpOnly: true })
+        await createUserHomeDir(user.id)
+        const cookie = serialize("userToken", token, { path: "/", maxAge: calculateSeconds("days", 5)})
 
         res.setHeader("Set-Cookie", cookie)
-        return res.status(200).send({ user: { name, email, id: user.id, plan: user.plan } })
+        return res.status(200).send({ user: { name, email, id: user.id, plan: user.plan, usedSpace: user.usedSpace } })
     } catch (err) {
+        //@ts-ignore
+        if (err?.code === "P2002") return res.status(500).send({ error: { server: "User with this email already exists" } })
         return res.status(500).send({ error: { server: "Unexpected server error" } })
     }
 }

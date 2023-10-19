@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50px;
+    
+}
+
+.path_part {
+    color: #aac;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.path_part:hover {
+    color: #446;
+}

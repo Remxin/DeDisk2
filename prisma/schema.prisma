@@ -16,10 +16,21 @@ model User {
   email      String   @unique
   name       String
   password   String
-  plan       String   @default("15GB")
-  usedSpace  String   @default("0B")
+  plan       String   @default("15_GB")
+  usedSpace  String   @default("0_B")
   createDate DateTime @default(now())
   shares     Share[]
+  favourites  Favourite[]
+}
+
+model Favourite {
+  id      String    @id @default(uuid())
+  type    String
+  name    String
+  path    String
+  date    DateTime  @default(now())
+  userId  String
+  user    User @relation(fields: [userId], references: [id])
 }
 
 model Share {

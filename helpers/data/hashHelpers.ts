@@ -1,5 +1,5 @@
 // import bcrypt from "bcrypt"
-const bcrypt = require('bcrypt')
+import bcrypt from "bcrypt"
 
 
 type hashResponseType = {
@@ -13,11 +13,10 @@ type compareResponseType = {
 }
 
 export const hashHelpers = {
-    hashPass: (password: String) => {
+    hashPass: (password: string) => {
         return new Promise<hashResponseType>(async (resolve, reject) => {
             try {
                 const hashed = await bcrypt.hash(password, 12)
-                // console.log(hashe);
                 resolve({ res: hashed })
 
             } catch (err) {
@@ -27,10 +26,10 @@ export const hashHelpers = {
 
     },
 
-    comparePass: (password: String, typedPass: string) => {
+    comparePass: (password: string, typedPass: string) => {
         return new Promise<compareResponseType>(async (resolve, reject) => {
             try {
-                const match = await bcrypt.compare(password, typedPass)
+                const match = await bcrypt.compare(typedPass, password)
                 resolve({ res: match })
             } catch (err) {
                 reject({ err })

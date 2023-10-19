@@ -1,0 +1,5 @@
+@media screen and (min-width: 576px) {
+    .navbar {
+        height: 100px;
+    }
+}

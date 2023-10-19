@@ -1,0 +1,100 @@
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 20px;
+    background-color: #3D2C8D22;
+}
+
+.arrow_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #34077b44;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    transition: .3s all;
+    font-size: 20px;
+}
+
+.arrow_button:hover {
+    background-color: #34077b66
+}
+
+.options_container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    gap: 4px;
+}
+
+.options_container a{
+    width: 100%;
+}
+
+.options_container button {
+    display: flex;
+    align-items: center;
+    border: none;
+    width: 100%;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: .3s all;
+    padding-left: 10px;
+}
+
+.options_container button:hover {
+    box-shadow: 0 0 5px 2px #34077b66;
+}
+
+.options_container button svg {
+    margin-right: 5px;
+}
+
+.new_button_container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.new_button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 20px;
+    height: 50px;
+    width: 60%;
+    background-color: #ccf;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    box-shadow: 0 0 5px 1px #34077baa;
+    cursor: pointer;
+    transition: .3s all;
+}
+
+.new_button:hover {
+    background-color: #eef;
+}
+
+.plan_modal {
+    z-index: 1000;
+}
+
+.plan_cards {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+}

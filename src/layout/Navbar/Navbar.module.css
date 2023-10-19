@@ -1,0 +1,208 @@
+@import url('./576.css');
+
+.navbar {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    top: 0;
+    left: 0;
+    height: 80px;
+    width: 100%;
+    background-color: #34077b88;
+    z-index: 1000;
+    transition: .3s all;
+}
+
+.mobile_nav {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 280px;
+    top: 0;
+    left: 0;
+    padding-top: 80px;
+    background-color: #34077bcc;
+}
+
+/* .mobile_nav li {
+    width: 100px;
+    text-align: center;
+}
+
+.mobile_nav li a {
+    font-size: 24px;
+    color: white;
+    font-family: var(--main-font);
+}
+
+.mobile_nav .current {
+    font-family: var(--main-bold-font);
+} */
+
+.hamburger {
+    position: absolute;
+    right: 20px;
+    width: 50px;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger_icon {
+    position: relative;
+    top: 35%;
+    left: 10%;
+    width: 80%;
+    height: 12%;
+    background-color: #fff;
+    border-radius: 3px;
+
+}
+
+.hamburger::before {
+    content: "";
+    position: relative;
+    display: block;
+    width: 80%;
+    height: 12%;
+    top: 15%;
+    left: 10%;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+.hamburger::after {
+    content: "";
+    position: relative;
+    display: block;
+    width: 80%;
+    height: 12%;
+    top: 55%;
+    left: 10%;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+/* classes for animations */
+
+.opened_hamburger::before {
+    animation-name: crossXB;
+    animation-duration: .3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    transform-origin: center;
+}
+
+.opened_hamburger::after {
+    animation-name: crossXA;
+    animation-duration: .3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    transform-origin: center;
+}
+
+.closed_hamburger::before {
+    animation-name: unrotateB;
+    animation-duration: .3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    transform-origin: center;
+}
+
+.closed_hamburger::after {
+    animation-name: unrotateA;
+    animation-duration: .3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    transform-origin: center;
+}
+
+.icon_opened {
+    animation-name: fadeOut;
+    animation-duration: .3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.icon_closed {
+    animation-name: fadeIn;
+    animation-duration: .3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.home_link {
+    display: block;
+    height: auto;
+}
+
+@keyframes crossXB {
+    0% {
+        transform: rotate(0);
+
+    }
+
+    100% {
+        transform: rotate(45deg) translateY(12.5px) translateX(10px);
+    }
+}
+
+@keyframes crossXA {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(-45deg) translateY(-12.5px) translateX(10px);
+    }
+
+}
+
+@keyframes unrotateB {
+    0% {
+        transform: rotate(45deg) translateY(12.5px) translateX(10px);
+    }
+
+    100% {
+        transform: rotate(0) translate(0, 0);
+    }
+}
+
+@keyframes unrotateA {
+    0% {
+        transform: rotate(-45deg) translateY(-12.5px) translateX(10px);
+    }
+
+    100% {
+        transform: rotate(0) translate(0, 0);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1
+    }
+
+    100% {
+        transform: translateX(10px);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        transform: translateX(10px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1
+    }
+
+
+}

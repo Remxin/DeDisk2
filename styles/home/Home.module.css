@@ -1,0 +1,44 @@
+.main {
+  padding-top: 100px;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+}
+
+.service_card {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service_card a {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  background-color: #fefefe;
+  border-radius: 5px;
+  aspect-ratio: 1 / 1;
+  border: 1px solid black;
+  transition: .3s all;
+  font-weight: bold;
+}
+
+.service_card a:hover {
+  box-shadow: 0 0 5px 2px #000 inset;
+}
+
+.service_card a:hover * {
+  color: #000;
+}
+
+.service_card img {
+  width: 80px;
+}

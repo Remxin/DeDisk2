@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.element_list {
+    width: 100%;
+    list-style: none;
+}
+
+.element {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding-left: 10px;
+    border-bottom: 1px solid #448;
+    background-color: #eef;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: .3s all;
+}
+
+.element:hover {
+    background-color: #aae;
+}
+
+.element svg {
+    margin-right: 5px;
+}
+
+.infoTitle {
+    margin-bottom: 10px;
+}
+
+.infoTable {
+    width: 100%;
+}
+
+
+.infoTable td {
+    padding: 0 5px;
+    background-color: #fff;
+    border-radius: 2px;
+}
