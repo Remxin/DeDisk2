@@ -5,6 +5,9 @@ import Modal from '@/src/components/modals/Modal/Modal'
 import Input from '@/src/components/forms/Input/Input'
 import Button from '@/src/components/forms/Button/Button'
 
+// icons
+import { BiSolidUser } from "react-icons/bi"
+
 // validations
 import { userValidations } from '@/src/validations/userData'
 
@@ -35,6 +38,7 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
   function addReceiver() {
     if (!inputRef.current.value) return
     setShareData(p => ({...p, targetUsers: [...p.targetUsers, inputRef.current.value]}))
+    inputRef.current.value = ""
   }
 
   return (
@@ -46,14 +50,15 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
             <label>By email <input type="radio" name="share-who" onChange={() => setShareData(p => ({...p, mode: "email"}))}/></label>
             {/* adding receivers */}
             { shareData.mode === "DeDisk account" ?
-              <Input key={"DeDisk account"} placeholder='Type user email or name' ref={inputRef}/> :
-              <Input key={"email"} placeholder='Type user email' ref={inputRef} validationFunction={userValidations.email}/>}
+              <Input key="DeDisk account" placeholder='Type user email or name' ref={inputRef}/> :
+              <Input key="email" placeholder='Type user email' ref={inputRef} validationFunction={userValidations.email}/>
+            }
             <Button onClick={addReceiver} text="Add receiver"/>
 
             {/* showing all receivers */}
             <ul>
               {shareData.targetUsers.map(t => (
-                <ul key={t}>{t}</ul>
+                <ul key={t}><BiSolidUser/> {t}</ul>
               ))}
             </ul>
             <p>Share time</p>
@@ -62,6 +67,7 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
                 <option value={s.value} key={s.value}>{s.name}</option>
               ))}
             </select>
+            <Button text="Share" onClick={() => null}/>
           </form>
         </Modal>
   )
