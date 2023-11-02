@@ -42,10 +42,12 @@ export default async function handler(
         if (!validPass.res) return res.status(401).send({ error: { password: "Wrong password" } })
 
         const token = signToken({ id: user.id }, "user", "5d")
+        console.log('jest')
         const cookie = serialize("userToken", token, { path: "/", maxAge: calculateSeconds("days", 5)})
         res.setHeader("Set-Cookie", cookie)
         return res.status(200).send({ user: { name: user.name, email, id: user.id, plan: user.plan, usedSpace: user.usedSpace } })
     } catch (err) {
+        console.log(err)
         return res.status(500).send({ error: { server: "Unexpected server error" } })
     }
 }

@@ -16,7 +16,7 @@ model User {
   email      String   @unique
   name       String
   password   String
-  plan       String   @default("15_GB")
+  plan       String   @default("0_GB")
   usedSpace  String   @default("0_B")
   createDate DateTime @default(now())
   shares     Share[]

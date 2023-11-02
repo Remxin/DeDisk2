@@ -49,6 +49,7 @@ export default async function handler(
     } catch (err) {
         //@ts-ignore
         if (err?.code === "P2002") return res.status(500).send({ error: { server: "User with this email already exists" } })
+        console.log(err)
         return res.status(500).send({ error: { server: "Unexpected server error" } })
     }
 }

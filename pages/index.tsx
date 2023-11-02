@@ -11,7 +11,6 @@ import Link from 'next/link'
 import { appConstants } from '@/src/constants/appConstants'
 
 // helpers
-import { getCookie } from '@/helpers/data/cookies'
 import { GetServerSidePropsContext } from 'next'
 import * as cookie from "cookie"
 
@@ -34,7 +33,13 @@ export default function Home() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  //@ts-ignore
+  if (!context.req.headers?.cookie) return {
+    redirect: {
+      destination: "/login",
+      permanent: false
+    },
+  }
+
   const parsedCookies = cookie.parse(context.req.headers.cookie);
   const res = await fetch(`${appConstants.serverUrl}/api/user/verify`, {
     method: "POST",

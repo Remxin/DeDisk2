@@ -4,9 +4,11 @@ import axios from "axios"
 
 // router
 import { useSearchParams } from "next/navigation"
+import Router from "next/router"
 
 // helpers
 import { getOriginalPath, getModifiedPath } from "../helpers/path"
+import { splitPath } from "@/helpers/fs/path"
 
 // --- actions ---
 type Move = { type: "move", payload: string}
@@ -162,8 +164,6 @@ function driveReducer(state: stateType, action: ActionType) {
 
 
 export function useDrive(queryProps: QueryProps) {
-    const searchParams = useSearchParams()
-   
     const [state, dispatch] = useReducer(driveReducer, initialState)
     
 
@@ -176,6 +176,8 @@ export function useDrive(queryProps: QueryProps) {
         switch(action.type) {
             case "move":
                 dispatch({ type: "setLoading" })
+                
+                Router.push(`${appConstants.clientUrl}/drive?path=${action.payload}`)
                 
                 res = await fetch(`${appConstants.serverUrl}/api/dir/${action.payload}`)
                 
@@ -190,7 +192,8 @@ export function useDrive(queryProps: QueryProps) {
                 break
 
             case "createDir":
-                const dirName = action.payload.split("/").pop()
+                const dirName = splitPath(action.payload).pop()
+                
                 dispatch({ type: "setLoading"})
                 res = await fetch(`${appConstants.serverUrl}/api/dir/`, {
                     method: "POST",
@@ -199,7 +202,8 @@ export function useDrive(queryProps: QueryProps) {
 
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).error.server })
                 resData = await res.json()
-                dispatch({ type: "createDir", payload: resData.path.split("/").pop()})
+                //@ts-ignore
+                dispatch({ type: "createDir", payload: dirName})
                 break
             case "sendFile":
                 // dispatch({ type: "setLoading"})
