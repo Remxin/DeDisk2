@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-export type TokenType = "user" | "reset-password" | "verify-user"
+export type TokenType = "user" | "share"
 
 function getTokenSecret(tokenType: TokenType) {
     let tokenSecret: string | undefined = ""
@@ -8,12 +8,12 @@ function getTokenSecret(tokenType: TokenType) {
         case "user":
             tokenSecret = process.env.USER_TOKEN
             break
-        case "reset-password":
-            tokenSecret = process.env.USER_RESET_TOKEN
+        case "share":
+            tokenSecret = process.env.SHARE_TOKEN
             break
-        case "verify-user":
-            tokenSecret = process.env.USER_VERIFICATION_TOKEN
-            break
+        default:
+            throw new Error("this type of token does not exist")
+       
     }
     if (!tokenSecret) throw new Error("Wrong token type")
     return tokenSecret

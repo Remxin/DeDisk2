@@ -9,8 +9,8 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - .:/src/app
-      - /src/app/node_modules
+      - .:/dev/src/app
+      # - /src/app/node_modules
   
   mysql:
     image: "mysql:latest"

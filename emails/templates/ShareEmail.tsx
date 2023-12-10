@@ -17,7 +17,7 @@ type componentProps = {
     token: string
 }
 
-export function WelcomeEmail({ sharerName, resourceName, token }: componentProps) {
+export function ShareEmail({ sharerName, resourceName, token }: componentProps) {
     return (
         <Html>
             <Section style={main}>
@@ -28,7 +28,7 @@ export function WelcomeEmail({ sharerName, resourceName, token }: componentProps
                 <Container style={container}>
                     <Text style={paragraph}>Click the button to see the shared content</Text>
                     {/* @ts-ignore */}
-                    <Button style={button} target="_blank" href={`${appConstants.clientUrl}/drive?search=shared&token=${token}`}><Text style={buttonText}>Aktywuj konto</Text></Button>
+                    <Button style={button} target="_blank" href={`${appConstants.clientUrl}/drive?search=shared&token=${token}`}><Text style={buttonText}>See the content</Text></Button>
                     <Text style={postScriptum}>*This button link is secret! To not share it with anyone</Text>
                 </Container>
             </Section>

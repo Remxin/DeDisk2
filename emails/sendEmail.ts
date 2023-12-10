@@ -18,7 +18,7 @@ export async function sendEmail(template: JSX.Element, email: string, title: str
 
 
     await transporter.sendMail({
-        from: `"DeDisk 🧹" ${process.env.EMAIL_SENDER}`, // sender address
+        from: `"DeDisk" ${process.env.EMAIL_SENDER}`, // sender address
         to: email, // list of receivers
         subject: title, // Subject line
         html: templateHTML, // html body

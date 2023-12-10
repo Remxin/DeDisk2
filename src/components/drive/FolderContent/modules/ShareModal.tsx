@@ -1,4 +1,5 @@
-import React, { MutableRefObject, useRef, useState } from 'react'
+import React, { ChangeEvent, MutableRefObject, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 // components
 import Modal from '@/src/components/modals/Modal/Modal'
@@ -13,10 +14,10 @@ import { userValidations } from '@/src/validations/userData'
 
 // data 
 import { shareTimes } from './data'
+import { appConstants } from '@/src/constants/appConstants'
 
 // types
 type ShareData = {
-  mode: "DeDisk account" | "email",
   targetUsers: string[]
   expires: typeof shareTimes[number]["value"]
 }
@@ -28,9 +29,9 @@ type componentsProps = {
 }
 
 const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
+  const searchParams = useSearchParams()
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>
   const [shareData, setShareData] = useState<ShareData>({
-    mode: "DeDisk account",
     targetUsers: [],
     expires: ""
   })
@@ -41,18 +42,41 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
     inputRef.current.value = ""
   }
 
+  async function handleForm() {
+    if (shareData.targetUsers.length < 1) return 
+    console.log(shareData.expires)
+    try {
+      const res = await fetch(`${appConstants.serverUrl}/api/file/share`, {
+        method: "POST",
+        body: JSON.stringify({ emails: shareData.targetUsers, expiresIn: shareData.expires, filepath: `${searchParams.get("path")}/${targetName}`}) // email, expiresIn, filepath
+      })
+      if (res.status !== 200) {
+        console.log("failed")
+        // throw new Error((await res.json()).error)
+        // error handling
+        return
+      }
+      const resData = await res.json()
+      console.log(resData)
+
+    } catch (err) {
+      throw new Error("fetch failed")
+    }
+  }
+
+  function handleSubmit(e: ChangeEvent<HTMLSelectElement>) {
+    const val = e.currentTarget.value as typeof shareTimes[number]["value"]
+    if (val) setShareData(p => ({ ...p, expires: val }))
+    else console.log(val)
+  }
+
   return (
-    <Modal visible={visible} setVisible={setVisible}>
+    <Modal visible={visible} setVisible={setVisible} size={{ width: "300px", height: "500px"}}>
           <h2>Share {targetName}</h2>
           <form>
-            {/* selecting share form */}
-            <label>By DeDisk account<input type="radio" name="share-who" defaultChecked onChange={() => setShareData(p => ({...p, mode: "DeDisk account"}))}/></label>
-            <label>By email <input type="radio" name="share-who" onChange={() => setShareData(p => ({...p, mode: "email"}))}/></label>
+        
             {/* adding receivers */}
-            { shareData.mode === "DeDisk account" ?
-              <Input key="DeDisk account" placeholder='Type user email or name' ref={inputRef}/> :
-              <Input key="email" placeholder='Type user email' ref={inputRef} validationFunction={userValidations.email}/>
-            }
+            <Input placeholder='Type user email' ref={inputRef} validationFunction={userValidations.email}/>
             <Button onClick={addReceiver} text="Add receiver"/>
 
             {/* showing all receivers */}
@@ -61,13 +85,14 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
                 <ul key={t}><BiSolidUser/> {t}</ul>
               ))}
             </ul>
-            <p>Share time</p>
-            <select>
+            <p>Share time</p> 
+            {/* @ts-ignore */}
+            <select onChange={handleSubmit}>
               {shareTimes.map(s => (
-                <option value={s.value} key={s.value}>{s.name}</option>
+                <option value={s.value} key={s.value} onSelect={() => setShareData(p => ({...p, expires: s.value }))}>{s.name}</option>
               ))}
             </select>
-            <Button text="Share" onClick={() => null}/>
+            <Button text="Share" onClick={handleForm}/>
           </form>
         </Modal>
   )
