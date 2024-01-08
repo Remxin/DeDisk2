@@ -10,6 +10,9 @@ import Router from "next/router"
 import { getOriginalPath, getModifiedPath } from "../helpers/path"
 import { splitPath } from "@/helpers/fs/path"
 
+// types
+import { ShareT } from "../types/prismaTypes"
+
 // --- actions ---
 type Move = { type: "move", payload: string}
 type CreateDir = { type: "createDir", payload: string}
@@ -27,11 +30,13 @@ type AddToFavourites = { type: "add to favourites", payload: { fileName: string,
 type RemoveFromFavourites = { type: "remove from favourites", payload: { fileName: string, path: string }}
 type GetFavourites = { type: "get favourites", payload: favouriteStructureType[] }
 
-type SetError = { type: "setError", payload: string}
-type SetLoading = { type: "setLoading", payload?: null}
+type GetShared = { type: "get shared", payload: Omit<ShareT, "user userId">[] }
+
+type SetError = { type: "setError", payload: string} 
+type SetLoading = { type: "setLoading" }
 
 // _ ACTIONS _
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData | AddToFavourites | RemoveFromFavourites | GetFavourites
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData | AddToFavourites | RemoveFromFavourites | GetFavourites | GetShared
 
 // --- upload ---
 type UploadProgress = {
@@ -49,7 +54,7 @@ type FileInformations = {
     birthtime: Date
     extension: string
 }
-export type AdditionalData = null | ({ type: "file data" } & FileInformations)
+export type AdditionalData = null | ({ type: "file data" } & FileInformations) | ({ type: "shared"} & Omit<ShareT, "user userId">[])
 
 export interface stateType {
     data: {
@@ -149,6 +154,13 @@ function driveReducer(state: stateType, action: ActionType) {
             state.data.searchType = "favourites"
             state.data.folderContent = action.payload
 
+            return { ...state }
+        case "get shared":
+            //@ts-ignore
+            state.data.additionalData = {
+                type: "shared",
+                ...action.payload
+            }
             return { ...state }
         case "setLoading":
             state.loading = true
@@ -315,6 +327,14 @@ export function useDrive(queryProps: QueryProps) {
             
                 dispatch({ type: "get favourites", payload: resData.data })
                 break
+            case "get shared":
+                res = await fetch(`${appConstants.serverUrl}/api/file/share`)
+                if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message})
+                resData = await res.json() as Omit<ShareT, "user userId">[]
+                console.log(resData)
+
+                dispatch({ type: "get shared", payload: resData})
+                break
 
             
 
@@ -324,6 +344,10 @@ export function useDrive(queryProps: QueryProps) {
     const customDispatch = useCallback(cDisptatch, [])
 
     useEffect(() => {
+        if (queryProps?.search === "shared") {
+            customDispatch({ type: "get shared", payload: []})
+            return
+        }
         if (queryProps?.search === "favourites") {
             customDispatch({ type: "get favourites", payload: [] })
             return

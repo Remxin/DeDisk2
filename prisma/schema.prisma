@@ -37,7 +37,10 @@ model Share {
   id     String @id @default(uuid())
   userId String
   user   User   @relation(fields: [userId], references: [id])
-  token  String
+  token  String @db.LongText
+  sharedSource  String
+  sharedTo  String // user email tab stringified
+  createData  DateTime  @default(now())
 }
 
-// ____ ENUMS ____
+

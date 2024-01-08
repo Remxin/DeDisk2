@@ -28,7 +28,6 @@ export const dirControllers = {
         
         let pathName = getLastUrlPart(req.url)
         pathName = pathName.replaceAll("%7C", "/")
-        console.log(pathName)
         if (token.error) return res.status(403).send(token.error)
 
         try {

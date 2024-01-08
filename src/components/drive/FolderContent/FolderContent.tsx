@@ -114,6 +114,7 @@ const FolderContent = () => {
   useEffect(() => {
     if (createFolder) return folderInputRef.current.focus()
   }, [createFolder])
+console.log(data.data.additionalData)
   return (
     <div className={styles.container}>
       <CurrentFolderIndicator/>
@@ -122,6 +123,9 @@ const FolderContent = () => {
           //@ts-ignore
            <ClickableInstance name={c.name} type={c.type} key={i} handleRightClick={handleRightClick} edit={contextAction === "rename" && customContext.value === c.name} handleInputBlur={resetContextActions}/>
         ))}
+        { (data.data.searchType === "shared" && data.data.additionalData?.type === "shared") ? data.data.additionalData.map(e => (
+          <BasicInstance name={e.sharedSource} type={"folder"} date={e.createData.toString()} path={e.sharedSource}/>
+        )) : null }
         { data.data.searchType === "favourites" && content.map((c, i) => (
           //@ts-ignore
           <BasicInstance name={c.name} type={c.type} date={c.date} path={c.path} key={i}/>
@@ -130,39 +134,41 @@ const FolderContent = () => {
         </ul>
         { customContext.show && <ContextMenuModal x={customContext.x} y={customContext.y} setVisible={handleContextBlur} />}
         {/* informations modal */}
-        <Modal visible={!!data.data.additionalData?.type} setVisible={() => dispatch({ type: "clear additional data" })} size={{ width: "90vw", height: "90vw"}}>
-          <h2 className={styles.infoTitle}>File informations</h2>
-          <table className={styles.infoTable}>
-            <tbody>
-              <tr>
-                <td>name</td>
-                <td>{data.data.additionalData?.name}</td>
-              </tr>
-              <tr>
-                <td>path</td>
-                <td>{data.data.currentFolder}</td>
-              </tr>
-              <tr>
-                <td>size</td>
-                <td>{getStringBytesFromUnit("B", data.data.additionalData?.size!, 1)}</td>
-              </tr>
-              <tr>
-                <td>extension</td>
-                <td>{data.data.additionalData?.extension}</td>
-              </tr>
-              <tr>
-                <td>last modified</td>
-                {/* @ts-ignore */}
-                <td>{new Date(data.data.additionalData?.atime).toDateString()}</td>
-              </tr>
-              <tr>
-                <td>creation date</td>
-                {/* @ts-ignore */}
-                <td>{new Date(data.data.additionalData?.birthtime).toDateString()}</td>
-              </tr>
-            </tbody>
-          </table>
-        </Modal>
+        { data.data.additionalData?.type === "file data" ? 
+         <Modal visible={data.data.additionalData?.type === "file data"} setVisible={() => dispatch({ type: "clear additional data" })} size={{ width: "90vw", height: "90vw"}}>
+         <h2 className={styles.infoTitle}>File informations</h2>
+         <table className={styles.infoTable}>
+           <tbody>
+             <tr>
+               <td>name</td>
+    
+               <td>{data.data.additionalData.name}</td>
+             </tr>
+             <tr>
+               <td>path</td>
+               <td>{data.data.currentFolder}</td>
+             </tr>
+             <tr>
+               <td>size</td>
+               <td>{getStringBytesFromUnit("B", data.data.additionalData.size, 1)}</td>
+             </tr>
+             <tr>
+               <td>extension</td>
+               <td>{data.data.additionalData.extension}</td>
+             </tr>
+             <tr>
+               <td>last modified</td>
+               <td>{new Date(data.data.additionalData.atime).toDateString()}</td>
+             </tr>
+             <tr>
+               <td>creation date</td>
+               <td>{new Date(data.data.additionalData.birthtime).toDateString()}</td>
+             </tr>
+           </tbody>
+         </table>
+       </Modal>
+        : null}
+       
         <ShareModal visible={showShareMenu} setVisible={setShowShareMenu} targetName={customContext.value}/>
         
     </div>

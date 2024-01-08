@@ -25,7 +25,6 @@ export const fileControllers = {
         try {
             const file: any = await readFile(req, true, cookies.data.id)
             let filesNames = []
-            console.log(file)
 
             for (let i = 0; i < Object.keys(file.files).length; i++) {
                 const fileData = file.files['File' + i][0]

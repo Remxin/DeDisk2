@@ -27,9 +27,7 @@ export function getStringBytesFromUnit(unit: units, s: number, round: number) {
     let iterationIndex = 1
     
     while (s > 1024 ** iterationIndex) {
-        console.log((s / 1024 ** iterationIndex) * round)
         s = Math.round((s / 1024 ** iterationIndex) * 10**round) / 10**round
-        console.log(s)
         iterationIndex += 1
     }
     unitIndex += iterationIndex - 1
