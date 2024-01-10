@@ -34,7 +34,9 @@ const Modal = ({ children, visible, setVisible, className, size = { width: "80%"
 
     function handleVisibility(e: React.MouseEvent) {
         if (e.currentTarget === e.target) setVisible(false)
+        
     }
+console.log(visible)
     return (
         <AnimatePresence>
             {visible &&

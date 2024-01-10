@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from "react"
+import { useCallback, useEffect, useReducer, Reducer } from "react"
 import { appConstants } from "../constants/appConstants"
 import axios from "axios"
 
@@ -12,6 +12,7 @@ import { splitPath } from "@/helpers/fs/path"
 
 // types
 import { ShareT } from "../types/prismaTypes"
+import { ResponseT } from "../types/apiTypes"
 
 // --- actions ---
 type Move = { type: "move", payload: string}
@@ -56,13 +57,28 @@ type FileInformations = {
 }
 export type AdditionalData = null | ({ type: "file data" } & FileInformations) | ({ type: "shared"} & Omit<ShareT, "user userId">[])
 
-export interface stateType {
-    data: {
-        searchType: "" | "favourites" | "shared" // empty string is normal search
-        currentFolder: string
-        folderContent: structureType[] | favouriteStructureType[]
-        additionalData: AdditionalData
-    },
+type NormalSearchT = {
+    searchType: "" // empty string is normal search
+    currentFolder: string
+    folderContent: structureType[]
+    additionalData: AdditionalData | null
+}
+
+type FavouritesSearchT = {
+    searchType: "favourites"
+    currentFolder: string
+    folderContent: favouriteStructureType[]
+    additionalData: AdditionalData | null
+}
+
+type SharedSearchT = {
+    searchType: "shared"
+    currentFolder: string
+    folderContent: Omit<ShareT, "user userId">[],
+    additionalData: AdditionalData | null
+}
+export type stateType = {
+    data: NormalSearchT | FavouritesSearchT | SharedSearchT,
     uploads: UploadProgress[],
     loading: boolean
     error: string
@@ -81,6 +97,7 @@ interface favouriteStructureType  {
 
 // query props type
 import { QueryProps } from "@/pages/drive"
+
 // ----------------
 
 export const initialState: stateType = {
@@ -95,22 +112,27 @@ export const initialState: stateType = {
     error: ""
 }
 
-function driveReducer(state: stateType, action: ActionType) {
+//@ts-ignore
+const driveReducer: Reducer<stateType, ActionType> = (state, action) => {
     switch (action.type) {
         case "move":
-        
+            state.data.searchType = ""
             // @ts-ignore
             let originalPath = getOriginalPath(action.payload.currentFolder)
             // @ts-ignore
             action.payload.currentFolder = originalPath
-            // @ts-ignore
-            state.data = action.payload
-            state.data.searchType = ""
+            
+            state.data = {
+                ...state.data,
+                // @ts-ignore
+                ...action.payload,
+                additionalData: null
+            }
             state.error = ""
             state.loading = false
             return { ...state }
-            // return { ...state, data: action.payload, error: "", loading: false}
         case "createDir":
+            if (state.data.searchType !== "") return
             if(state.data.folderContent.some((e) => e.name === action.payload)) return { ...state }
             //@ts-ignore`
             state.data.folderContent.push({ name: action.payload, type: "folder"})
@@ -134,12 +156,14 @@ function driveReducer(state: stateType, action: ActionType) {
             }
             return { ...state }
         case "delete":
+            if (state.data.searchType !== "") return
             state.data.folderContent = state.data.folderContent.filter(e => e.name !== action.payload.target)
             return { ...state }
         case "clearUploads":
             state.uploads = []
             return { ...state }
         case "rename":
+            if (state.data.searchType !== "") return
             const myFile = state.data.folderContent.find((e) => e.name === action.payload.name) !
             myFile.name = action.payload.newName
             return { ...state }
@@ -156,10 +180,15 @@ function driveReducer(state: stateType, action: ActionType) {
 
             return { ...state }
         case "get shared":
-            //@ts-ignore
-            state.data.additionalData = {
-                type: "shared",
-                ...action.payload
+            state.data.searchType = "shared"
+            state = {
+                ...state,
+                data: {
+                    searchType: "shared",
+                    folderContent: action.payload,
+                    additionalData: null,
+                    currentFolder: ""
+                }
             }
             return { ...state }
         case "setLoading":
@@ -330,10 +359,9 @@ export function useDrive(queryProps: QueryProps) {
             case "get shared":
                 res = await fetch(`${appConstants.serverUrl}/api/file/share`)
                 if (res.status !== 200) return dispatch({ type: "setError", payload: (await res.json()).message})
-                resData = await res.json() as Omit<ShareT, "user userId">[]
-                console.log(resData)
+                resData = await res.json() as ResponseT<Omit<ShareT, "user userId">[]>
 
-                dispatch({ type: "get shared", payload: resData})
+                dispatch({ type: "get shared", payload: resData.data})
                 break
 
             
@@ -360,5 +388,6 @@ export function useDrive(queryProps: QueryProps) {
             customDispatch({ type: "move", payload: url})
         }
     }, [queryProps?.search, queryProps?.path])
+
     return { data: state, dispatch: customDispatch }
 }

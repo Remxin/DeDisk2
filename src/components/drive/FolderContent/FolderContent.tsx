@@ -6,6 +6,7 @@ import { BiSolidFolder } from "react-icons/bi"
 // components
 import ClickableInstance from '../ClickableInstance/ClickableInstance'
 import BasicInstance from "../ClickableInstance/BasicInstance"
+import SharedInstance from '../ClickableInstance/SharedInstance'
 import CurrentFolderIndicator from '../CurrentFolderIndicator/CurrentFolderIndicator'
 import ContextMenuModal from '../ContextMenuModal/ContextMenuModal'
 
@@ -85,6 +86,7 @@ const FolderContent = () => {
       dispatch({ type: "informations", payload: { target }})
       
     } else if (contextAction === "add to favourites") {
+      if (data.data.searchType !== "") return
       const instance = data.data.folderContent.find(e => e.name === customContext.value)
       if (!instance) return
       dispatch({ type: "add to favourites", payload: { path: data.data.currentFolder, fileName: instance.name, type: instance.type }})
@@ -114,7 +116,7 @@ const FolderContent = () => {
   useEffect(() => {
     if (createFolder) return folderInputRef.current.focus()
   }, [createFolder])
-console.log(data.data.additionalData)
+console.log(data)
   return (
     <div className={styles.container}>
       <CurrentFolderIndicator/>
@@ -123,8 +125,8 @@ console.log(data.data.additionalData)
           //@ts-ignore
            <ClickableInstance name={c.name} type={c.type} key={i} handleRightClick={handleRightClick} edit={contextAction === "rename" && customContext.value === c.name} handleInputBlur={resetContextActions}/>
         ))}
-        { (data.data.searchType === "shared" && data.data.additionalData?.type === "shared") ? data.data.additionalData.map(e => (
-          <BasicInstance name={e.sharedSource} type={"folder"} date={e.createData.toString()} path={e.sharedSource}/>
+        { data.data.searchType === "shared" ? data.data.folderContent.map((e, i) => (
+          <SharedInstance createData={e.createData} name={e.sharedSource} sharedTo={e.sharedTo} key={i}/>
         )) : null }
         { data.data.searchType === "favourites" && content.map((c, i) => (
           //@ts-ignore

@@ -43,6 +43,8 @@ const RightMenu = () => {
     const [showNew, setShowNew] = useState(false)
     const [showChoosePlan, setShowChoosePlan] = useState(false)
 
+    console.log(selected)
+
     function manageSize() {
         if (extended) {
             setExtended(false)
