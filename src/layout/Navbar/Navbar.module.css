@@ -27,6 +27,14 @@
     background-color: #34077bcc;
 }
 
+.user_icon {
+    border-radius: 50%;
+    width: 50px;
+    margin-left: 10px;
+    /* border: 1px solid black; */
+    box-shadow: 0 0 2px black;
+}
+
 /* .mobile_nav li {
     width: 100px;
     text-align: center;
