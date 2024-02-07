@@ -22,7 +22,6 @@ const SharedInstance = ({name, createData, sharedTo}: ComponentPropsT) => {
 
     const [clicked, setClicked] = useState(false)
 
-    console.log(clicked)
   return (
     <>
     

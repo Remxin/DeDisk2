@@ -44,7 +44,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
      
             const token = signToken({ filepath, userId: user.id }, "share", expiresIn)
-            console.log('token ', token)
             await prisma.share.create({ data: { userId: user.id, token, sharedTo: JSON.stringify(emails), sharedSource: filepath}})
            
 
@@ -54,7 +53,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             return res.status(200).send(ret)
         } catch(err) {
-            console.log(err)
             ret = { status: "failed", message: "internal server error", data: null}
             return res.status(500).send(ret)
         }

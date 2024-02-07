@@ -77,11 +77,10 @@ export const fileControllers = {
             resultBody.data = name
 
         } catch (err) {
-            console.log(err)
+
             status = 500
             resultBody = { status: "fail", message: "Something went wrong", data: null}
         } 
-        console.log(resultBody)
         res.status(status).send(resultBody)
     },
 
@@ -96,7 +95,7 @@ export const fileControllers = {
         
         try {
             const info = await getFileInfo(replacedPath, cookies.data.id)
-            console.log(info)
+
             resultBody.data = info
 
         } catch (err) {

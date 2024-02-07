@@ -32,7 +32,6 @@ export const dirControllers = {
 
         try {
             const dirList = await listDir(token.data.id, pathName)
-            console.log(dirList)
             return res.send({ data: dirList})
         } catch (err) {
             return res.status(500).send({ error: { server: "Unknown server error" } })

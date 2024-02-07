@@ -116,7 +116,6 @@ const FolderContent = () => {
   useEffect(() => {
     if (createFolder) return folderInputRef.current.focus()
   }, [createFolder])
-console.log(data)
   return (
     <div className={styles.container}>
       <CurrentFolderIndicator/>

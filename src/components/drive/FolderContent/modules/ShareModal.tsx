@@ -44,7 +44,6 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
 
   async function handleForm() {
     if (shareData.targetUsers.length < 1) return 
-    console.log(shareData.expires)
     try {
       const res = await fetch(`${appConstants.serverUrl}/api/file/share`, {
         method: "POST",
