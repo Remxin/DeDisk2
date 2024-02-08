@@ -15,6 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userId = cookieValidations.verifyUser(req)?.data?.id
     if (!userId) return res.status(400).send({ status: "failed", message: "User not authenticated"})
     const avatar = await fs.readFileSync(path.join("serverFiles", "folders", userId, ".__metadata__", "icon.png"))
-    console.log(avatar)
+   
     res.status(200).send(avatar)
 } 

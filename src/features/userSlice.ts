@@ -3,6 +3,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { appConstants } from "../constants/appConstants";
 
+// router
+import Router from "next/router";
+
 type userRegisterData = {
     name: string
     email: string
@@ -101,6 +104,14 @@ const userSlice = createSlice({
             state.error = ""
             state.success = false
             state.loading = false
+        },
+        logout: (state) => {
+            (async () => {
+                const res = await fetch(`${appConstants.serverUrl}/api/user/logout`, { method: "POST"})
+                if (res.status !== 200) return
+                state = initialState
+                Router.push("/login")
+            })()
         }
     },
     extraReducers: (builder) => {
@@ -150,6 +161,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { resetLoadingData } = userSlice.actions
+export const { resetLoadingData, logout } = userSlice.actions
 
 export default userSlice.reducer

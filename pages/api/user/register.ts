@@ -51,7 +51,6 @@ export default async function handler(
     res: NextApiResponse<Data>
 ) {
     if (req.method !== "POST") return res.status(405).send({ error: { server: "Wrong method" } })
-    console.log('aa')
     const { name, email, password } = req.body as Body
     const validBody = bodySchema.safeParse({ name, email, password })
    

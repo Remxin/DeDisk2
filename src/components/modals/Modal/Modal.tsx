@@ -36,7 +36,7 @@ const Modal = ({ children, visible, setVisible, className, size = { width: "80%"
         if (e.currentTarget === e.target) setVisible(false)
         
     }
-console.log(visible)
+
     return (
         <AnimatePresence>
             {visible &&

@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
 import navStyles from "./Navbar.module.css"
 
+// redux
+import { useDispatch } from 'react-redux'
+import { logout } from '@/src/features/userSlice'
+
 // hooks
 import useWindowDimensions from '@/src/hooks/useWindowDimensions'
 // animations 
 import { motion, AnimatePresence } from "framer-motion"
 import { appConstants } from '@/src/constants/appConstants'
+
+// icons
+import { BiExit } from "react-icons/bi";
 
 // variants
 const mobileNavVariants = {
@@ -21,10 +28,20 @@ const mobileNavVariants = {
 const Navbar = () => {
     const dimensions = useWindowDimensions()
     const [isOpened, setIsOpened] = useState(false)
+    const [userMenuOpened, setUserMenuOpened] = useState(false)
+
+    const dispatch = useDispatch()
 
     return (
         <header className={navStyles.navbar}>
-            <img src={`${appConstants.serverUrl}/api/user/icon`} alt="user icon" className={navStyles.user_icon} />
+            <div className={navStyles.user_icon_container} onClick={() => setUserMenuOpened(p => !p)}>
+                <img src={`${appConstants.serverUrl}/api/user/icon`} alt="user icon" className={navStyles.user_icon} />
+                <div className={navStyles.user_menu} hidden={!userMenuOpened}>
+                    <ul>
+                        <li onClick={() => dispatch(logout())}><BiExit/>Logout</li>
+                    </ul>
+                </div>
+            </div>
             {dimensions.width < 576 ? <>
                 <div className={isOpened ? `${navStyles.hamburger} ${navStyles.opened_hamburger}` : `${navStyles.hamburger} ${navStyles.closed_hamburger}`} onClick={() => setIsOpened(p => !p)}>
                     <div className={isOpened ? `${navStyles.hamburger_icon} ${navStyles.icon_opened}` : `${navStyles.hamburger_icon} ${navStyles.icon_closed}`}></div>
