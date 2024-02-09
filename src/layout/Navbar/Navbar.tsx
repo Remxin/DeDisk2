@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import navStyles from "./Navbar.module.css"
 
 // redux
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '@/src/features/userSlice'
 
 // hooks
@@ -13,6 +13,7 @@ import { appConstants } from '@/src/constants/appConstants'
 
 // icons
 import { BiExit } from "react-icons/bi";
+import { RootState } from '@/src/config/reduxStore'
 
 // variants
 const mobileNavVariants = {
@@ -31,6 +32,13 @@ const Navbar = () => {
     const [userMenuOpened, setUserMenuOpened] = useState(false)
 
     const dispatch = useDispatch()
+    const userId = useSelector((state: RootState) => state.user.id)
+    console.log(userId)
+
+    if (!userId) return (
+        <header className={navStyles.navbar}></header>
+    )
+
 
     return (
         <header className={navStyles.navbar}>

@@ -130,6 +130,7 @@ const userSlice = createSlice({
             state.email = payload.email
             state.plan = payload.plan
             state.usedSpace = payload.usedSpace
+            Router.push("/")
         })
 
         builder.addCase(registerUser.rejected, (state, { payload }) => {
@@ -151,6 +152,7 @@ const userSlice = createSlice({
             state.email = payload.email
             state.plan = payload.plan
             state.usedSpace = payload.usedSpace
+            Router.push("/")
         })
 
         builder.addCase(loginUser.rejected, (state, { payload }) => {

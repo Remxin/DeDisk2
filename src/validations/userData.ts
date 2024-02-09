@@ -19,9 +19,12 @@ export const userValidations = {
     },
 
     password: (text: string) => {
-        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/gm
+        const regex = userValidations.passwordRegex()
         const isValid = regex.test(text)
 
         return isValid ? "" : "Password should be more complicated"
+    },
+    passwordRegex: () => {
+       return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/gm
     }
 }
