@@ -3,7 +3,7 @@ import navStyles from "./Navbar.module.css"
 
 // redux
 import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '@/src/features/userSlice'
+import { logout, setUser, setError, setLoading, resetLoadingData } from '@/src/features/userSlice'
 
 // hooks
 import useWindowDimensions from '@/src/hooks/useWindowDimensions'
@@ -32,8 +32,8 @@ const Navbar = () => {
     const [userMenuOpened, setUserMenuOpened] = useState(false)
 
     const dispatch = useDispatch()
-    const userId = useSelector((state: RootState) => state.user.id)
-    console.log(userId)
+    const user = useSelector((state: RootState) => state.user)
+    const userId = user.id
 
     if (!userId) return (
         <header className={navStyles.navbar}></header>

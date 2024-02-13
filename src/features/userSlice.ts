@@ -6,6 +6,8 @@ import { appConstants } from "../constants/appConstants";
 // router
 import Router from "next/router";
 
+
+
 type userRegisterData = {
     name: string
     email: string
@@ -100,10 +102,24 @@ const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        resetLoadingData: (state, action) => {
-            state.error = ""
-            state.success = false
+        resetLoadingData: (state) => {
             state.loading = false
+        },
+        setLoading: (state) => {
+            state.loading = true
+        },
+        setError: (state, action: { payload: string }) => {
+            state.error = action.payload
+        },
+        setUser: (state, action: { payload: Omit<userInitialType, "loading"> }) => {
+            state.id = action.payload.id
+            state.email = action.payload.email
+            state.name = action.payload.name
+            state.createDate = action.payload.createDate
+            state.plan = action.payload.plan
+            state.usedSpace = action.payload.usedSpace
+            state.error = action.payload.error
+            state.success = action.payload.success
         },
         logout: (state) => {
             (async () => {
@@ -163,6 +179,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { resetLoadingData, logout } = userSlice.actions
+export const { resetLoadingData, logout, setError, setLoading, setUser } = userSlice.actions
 
 export default userSlice.reducer

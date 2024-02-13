@@ -2,6 +2,9 @@ import { useCallback, useEffect, useReducer, Reducer } from "react"
 import { appConstants } from "../constants/appConstants"
 import axios from "axios"
 
+// redux
+import { useDispatch } from "react-redux"
+
 // router
 import { useSearchParams } from "next/navigation"
 import Router from "next/router"
@@ -97,6 +100,7 @@ interface favouriteStructureType  {
 
 // query props type
 import { QueryProps } from "@/pages/drive"
+import { resetLoadingData, setError, setLoading, setUser, userInitialType } from "../features/userSlice"
 
 // ----------------
 
@@ -206,6 +210,7 @@ const driveReducer: Reducer<stateType, ActionType> = (state, action) => {
 
 export function useDrive(queryProps: QueryProps) {
     const [state, dispatch] = useReducer(driveReducer, initialState)
+    const userDispatch = useDispatch()
     
 
     async function cDisptatch (action: ActionType) {
@@ -370,6 +375,14 @@ export function useDrive(queryProps: QueryProps) {
     
 }
     const customDispatch = useCallback(cDisptatch, [])
+    async function getUserData() {
+        userDispatch(setLoading())
+        const res = await fetch(`${appConstants.serverUrl}/api/user/verify`, { method: "POST"})
+        const resData = await res.json() as Omit<userInitialType, "loading">
+        if (res.status !== 200)return userDispatch(setError(resData.error))
+        userDispatch(setUser(resData))
+        userDispatch(resetLoadingData())
+    }
 
     useEffect(() => {
         if (queryProps?.search === "shared") {
@@ -387,6 +400,7 @@ export function useDrive(queryProps: QueryProps) {
          
             customDispatch({ type: "move", payload: url})
         }
+        getUserData()
     }, [queryProps?.search, queryProps?.path])
 
     return { data: state, dispatch: customDispatch }
