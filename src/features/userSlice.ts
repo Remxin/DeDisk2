@@ -131,6 +131,7 @@ const userSlice = createSlice({
                 const res = await fetch(`${appConstants.serverUrl}/api/user/logout`, { method: "POST"})
                 if (res.status !== 200) return
                 Router.push("/login")
+                window.location.reload()
             })()
         }
     },
