@@ -66,9 +66,9 @@ const Login = () => {
         <form onSubmit={handleRegisterSubmit(onRegisterSubmit)} className={loginStyles.modal_form}>
             <img src="/images/logo.png" alt="logo" className={loginStyles.modal_logo}/>
             <h2 className={loginStyles.modal_title}>Register</h2>
-            <FormInput register={registerRegister("name")} error={registerErrors.name?.message} placeholder='Name' id="name"/>
-            <FormInput register={registerRegister("email")} error={registerErrors.email?.message} placeholder='Email' id="email"/>
-            <FormInput register={registerRegister("password")} error={registerErrors.password?.message} placeholder='Password' type='password' id="password"/>
+            <FormInput register={registerRegister("name")} error={registerErrors.name?.message} placeholder='Name' id="name-register"/>
+            <FormInput register={registerRegister("email")} error={registerErrors.email?.message} placeholder='Email' id="email-register"/>
+            <FormInput register={registerRegister("password")} error={registerErrors.password?.message} placeholder='Password' type='password' id="password-register"/>
             <button type="submit" className={loginStyles.submit_button}>Login</button>
         </form>
     ), [userState.error, registerErrors])
@@ -77,8 +77,8 @@ const Login = () => {
         <form onSubmit={handleLoginSubmit(onLoginSubmit)} className={loginStyles.modal_form}>
             <img src="/images/logo.png" alt="logo" className={loginStyles.modal_logo}/>
             <h2 className={loginStyles.modal_title}>Login</h2>
-            <FormInput register={loginRegister("email")} error={loginErrors.email?.message} placeholder='Email' id="email"/>
-            <FormInput register={loginRegister("password")} error={loginErrors.password?.message} placeholder='Password' type='password' id="email"/>
+            <FormInput register={loginRegister("email")} error={loginErrors.email?.message} placeholder='Email' id="email-login"/>
+            <FormInput register={loginRegister("password")} error={loginErrors.password?.message} placeholder='Password' type='password' id="password-login"/>
             <button type="submit" className={loginStyles.submit_button}>Login</button>
 
         </form>

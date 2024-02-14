@@ -1,19 +1,24 @@
 import React, { useState } from 'react'
 import navStyles from "./Navbar.module.css"
 
+// navigation
+import Router from 'next/router'
+
 // redux
 import { useDispatch, useSelector } from 'react-redux'
-import { logout, setUser, setError, setLoading, resetLoadingData } from '@/src/features/userSlice'
+import { logout, resetUser } from '@/src/features/userSlice'
+import { RootState } from '@/src/config/reduxStore'
 
 // hooks
 import useWindowDimensions from '@/src/hooks/useWindowDimensions'
+
 // animations 
 import { motion, AnimatePresence } from "framer-motion"
 import { appConstants } from '@/src/constants/appConstants'
 
 // icons
-import { BiExit } from "react-icons/bi";
-import { RootState } from '@/src/config/reduxStore'
+import { BiExit, BiArrowBack  } from "react-icons/bi";
+
 
 // variants
 const mobileNavVariants = {
@@ -33,7 +38,14 @@ const Navbar = () => {
 
     const dispatch = useDispatch()
     const user = useSelector((state: RootState) => state.user)
+    
     const userId = user.id
+
+    function logoutUser() {
+        dispatch(resetUser())
+        dispatch(logout())
+    }
+
 
     if (!userId) return (
         <header className={navStyles.navbar}></header>
@@ -46,7 +58,8 @@ const Navbar = () => {
                 <img src={`${appConstants.serverUrl}/api/user/icon`} alt="user icon" className={navStyles.user_icon} />
                 <div className={navStyles.user_menu} hidden={!userMenuOpened}>
                     <ul>
-                        <li onClick={() => dispatch(logout())}><BiExit/>Logout</li>
+                        <li onClick={() => Router.push("/")}><BiArrowBack />Other services</li>
+                        <li onClick={logoutUser}><BiExit/>Logout</li>
                     </ul>
                 </div>
             </div>
@@ -59,8 +72,6 @@ const Navbar = () => {
                     {isOpened ?
                         <motion.ul className={navStyles.mobile_nav} variants={mobileNavVariants} initial="initial" animate="animate" exit="initial">
                             {/* <NavLink url="/" text="Home" />
-                            <NavLink url="/contact" text="Contact" />
-                            <NavLink url="/projects" text="Projects" />
                             <NavLink url="/skills" text="Skills" /> */}
                         </motion.ul>
                         : null}

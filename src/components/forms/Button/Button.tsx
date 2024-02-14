@@ -5,12 +5,14 @@ type componentProps = {
     className?: string
     text: string
     styles?: React.CSSProperties,
-    onClick: () => any
+    onClick: () => any,
+    disabled?: boolean
 }
 
-const Button = ({ className, text, styles, onClick }: componentProps) => {
+const Button = ({ className, text, styles, onClick, disabled = false }: componentProps) => {
+
     return (
-        <div className={btnStyles.button} style={styles} onClick={onClick}>{text}</div>
+        <button className={btnStyles.button} style={styles} onClick={onClick} disabled={disabled} type="button">{text}</button>
     )
 }
 

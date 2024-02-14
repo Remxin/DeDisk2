@@ -111,6 +111,11 @@ const userSlice = createSlice({
         setError: (state, action: { payload: string }) => {
             state.error = action.payload
         },
+
+        resetUser: (state) => {
+            state = initialState
+        },
+
         setUser: (state, action: { payload: Omit<userInitialType, "loading"> }) => {
             state.id = action.payload.id
             state.email = action.payload.email
@@ -125,7 +130,6 @@ const userSlice = createSlice({
             (async () => {
                 const res = await fetch(`${appConstants.serverUrl}/api/user/logout`, { method: "POST"})
                 if (res.status !== 200) return
-                state = initialState
                 Router.push("/login")
             })()
         }
@@ -179,6 +183,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { resetLoadingData, logout, setError, setLoading, setUser } = userSlice.actions
+export const { resetLoadingData, logout, setError, setLoading, setUser, resetUser } = userSlice.actions
 
 export default userSlice.reducer

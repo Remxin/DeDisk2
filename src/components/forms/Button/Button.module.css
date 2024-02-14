@@ -5,15 +5,22 @@
     width: 160px;
     height: 40px;
     background-color: #C996CCdd;
+    border: none;
     color: #eeeeff;
     font-size: 20px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 400;
     user-select: none;
+    transition: .3s all;
 }
 
-.button:hover {
+.button:hover:enabled {
     color: #fff;
     background-color: #C996CCff;
+}
+
+.button:disabled {
+    transition: none;
+    opacity: .4;
 }
