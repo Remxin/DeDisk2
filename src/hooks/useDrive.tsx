@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useReducer, Reducer } from "react"
+
+// contstants
 import { appConstants } from "../constants/appConstants"
+
+// axios
 import axios from "axios"
+
+// helpers
+import { isFilePath } from "../helpers/path"
 
 // redux
 import { useDispatch } from "react-redux"
@@ -38,9 +45,13 @@ type GetShared = { type: "get shared", payload: Omit<ShareT, "user userId">[] }
 
 type SetError = { type: "setError", payload: string} 
 type SetLoading = { type: "setLoading" }
+type GetFile = {
+    type: "get file"
+    payload: { path: string }
+}
 
 // _ ACTIONS _
-export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData | AddToFavourites | RemoveFromFavourites | GetFavourites | GetShared
+export type ActionType = Move | CreateDir | Sort | SendFile | SetError | SetLoading | UploadFiles | SetUploadingProgress | ClearUploads | Rename | Delete | GetInformations | ClearData | AddToFavourites | RemoveFromFavourites | GetFavourites | GetShared | GetFile
 
 // --- upload ---
 type UploadProgress = {
@@ -58,7 +69,9 @@ type FileInformations = {
     birthtime: Date
     extension: string
 }
-export type AdditionalData = null | ({ type: "file data" } & FileInformations) | ({ type: "shared"} & Omit<ShareT, "user userId">[])
+
+
+export type AdditionalData = null | ({ type: "file data" } & FileInformations) | ({ type: "shared"} & Omit<ShareT, "user userId">[]) | ({ type: "show file", path: string})
 
 type NormalSearchT = {
     searchType: "" // empty string is normal search
@@ -198,6 +211,10 @@ const driveReducer: Reducer<stateType, ActionType> = (state, action) => {
         case "setLoading":
             state.loading = true
             return { ...state }
+        case "get file" :
+            state.data.additionalData = { type: "show file", path: action.payload.path }
+            state.data.currentFolder = action.payload.path
+            return { ...state }
         case "setError":
             state.loading = false
             state.error = action.payload
@@ -222,9 +239,14 @@ export function useDrive(queryProps: QueryProps) {
         switch(action.type) {
             case "move":
                 dispatch({ type: "setLoading" })
-                
+
                 Router.push(`${appConstants.clientUrl}/drive?path=${action.payload}`)
                 
+                if (isFilePath(action.payload)) {
+                    dispatch({ type: "get file", payload: { path: action.payload.replaceAll("|", "/")}})
+                    return
+
+                }
                 res = await fetch(`${appConstants.serverUrl}/api/dir/${action.payload}`)
                 
                 if (res.status !== 200) {
@@ -400,8 +422,11 @@ export function useDrive(queryProps: QueryProps) {
          
             customDispatch({ type: "move", payload: url})
         }
-        getUserData()
     }, [queryProps?.search, queryProps?.path])
+    
+    useEffect(() => {
+        getUserData()
+    }, [])
 
     return { data: state, dispatch: customDispatch }
 }

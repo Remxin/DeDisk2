@@ -22,6 +22,7 @@ import styles from "./FolderContent.module.css"
 import { getFileIcon } from './helpers'
 import Modal from '../../modals/Modal/Modal'
 import { getBytesString, getStringBytesFromUnit } from '@/helpers/data/size'
+import { appConstants } from '@/src/constants/appConstants'
 
 // types
 export type ContextActionType = "" | "rename" | "details" | "delete" | "add to favourites" | "share"
@@ -43,7 +44,7 @@ const FolderContent = () => {
     e.preventDefault()
     setCustomContext({ show: true, x: e.clientX, y: e.clientY, value })
   }
- 
+
 
   function resetContextActions() {
     setCustomContext({ show: false, x: 0, y: 0, value: ""})
@@ -116,6 +117,14 @@ const FolderContent = () => {
   useEffect(() => {
     if (createFolder) return folderInputRef.current.focus()
   }, [createFolder])
+
+  if (data.data.additionalData?.type === "show file") return (
+    <div className={styles.container}>
+      <CurrentFolderIndicator/>
+      <img src={`${appConstants.serverUrl}/api/file?url=${data.data.additionalData.path}`} alt="image" />
+    </div>
+  )
+
   return (
     <div className={styles.container}>
       <CurrentFolderIndicator/>

@@ -3,6 +3,7 @@ import { cookieValidations } from "../validation/cookieValidations";
 import prisma from "@/lib/prisma";
 import { createUserDir, listDir } from "../fs/dir";
 import { getLastUrlPart } from "../data/links";
+import { fileControllers } from "./file";
 
 export const dirControllers = {
     createDir: async (req: NextApiRequest, res: NextApiResponse) => {
@@ -28,6 +29,8 @@ export const dirControllers = {
         
         let pathName = getLastUrlPart(req.url)
         pathName = pathName.replaceAll("%7C", "/")
+        const pathParts = pathName.split("/")
+        if (/\./.test(pathParts[pathParts.length -1])) return fileControllers.getFile(req, res, pathName)
         if (token.error) return res.status(403).send(token.error)
 
         try {

@@ -3,6 +3,9 @@ import { readFile, renameFile, deleteFile, getFileInfo, addToFavourites, removeF
 import { cookieValidations } from "../validation/cookieValidations";
 import { getLastUrlPart, getUrlPartFromEnd } from "../data/links";
 import prisma from "@/lib/prisma";
+import fs from "fs"
+import path from "path";
+import { fileURLToPath } from "url";
 
 
 
@@ -103,6 +106,21 @@ export const fileControllers = {
             resultBody = { status: "fail", message: "Something went wrong", data: null}
         } 
         res.status(status).send(resultBody)
+    },
+
+    getFile: async(req: NextApiRequest, res: NextApiResponse) => {
+        const filePath = req.query.url as string 
+        if (!filePath) return res.status(404).send({ err: "File does not exist"})
+        try {
+            const userId = cookieValidations.verifyUser(req).data?.id
+            if (!userId) return res.status(403).send({ err: "User not authenticated"})
+            req.headers["content-type"] = "image/jpg"
+            const file = fs.readFileSync(path.join("serverFiles", "folders", userId ,...filePath.split("/")))
+            return res.status(200).send(file)
+
+        } catch (err) {
+            return res.status(400).send({ err: "File does not exist"})
+        }
     },
 
     getFavourites: async (req: NextApiRequest, res: NextApiResponse) => {

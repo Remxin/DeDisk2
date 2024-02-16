@@ -8,7 +8,6 @@ import styles from "./CurrentFolderIndicator.module.css"
 
 const CurrentFolderIndicator = () => {
      const { data, dispatch } = useContext(DriveContext)
-     
      let currentFolder = data.data.currentFolder ? data.data.currentFolder : ""
      
 
