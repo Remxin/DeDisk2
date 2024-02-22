@@ -10,7 +10,6 @@ const CurrentFolderIndicator = () => {
      const { data, dispatch } = useContext(DriveContext)
      let currentFolder = data.data.currentFolder ? data.data.currentFolder : ""
      
-
      function handleOnClick(e: string, i: number) {
        if (i === 0) return dispatch({ type: "move", payload: "/"})
        const pathParts = currentFolder.split("/")

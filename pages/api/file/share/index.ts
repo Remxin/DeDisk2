@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         
         try {
-            const { emails, expiresIn, filepath } = JSON.parse(req.body) as { emails: string[], expiresIn: string, filepath: string }
+            let { emails, expiresIn, filepath } = JSON.parse(req.body) as { emails: string[], expiresIn: string, filepath: string }
             const user = await prisma.user.findUnique({ where: { id: cookies.data.id }})
             if (!user) {
                 ret = { status: "failed", message: "user not authenticated, please allow cookies for this site", data: null}
@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 ret = { status: "failed", message: "wrong body ", data: null}
                 return res.status(400).send(ret)
             }
-    
+            filepath = filepath.replaceAll("//", "/")
      
             const token = signToken({ filepath, userId: user.id }, "share", expiresIn)
             await prisma.share.create({ data: { userId: user.id, token, sharedTo: JSON.stringify(emails), sharedSource: filepath}})
