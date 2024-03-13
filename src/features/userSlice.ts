@@ -112,8 +112,14 @@ const userSlice = createSlice({
             state.error = action.payload
         },
 
+        resetError: (state) => {
+            console.log('reset')
+            state.error = ""
+            state.loading = false
+            state.success = true
+        },
         resetUser: (state) => {
-            state = initialState
+            state = { ...initialState }
         },
 
         setUser: (state, action: { payload: Omit<userInitialType, "loading"> }) => {
@@ -184,6 +190,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { resetLoadingData, logout, setError, setLoading, setUser, resetUser } = userSlice.actions
+export const { resetLoadingData, logout, setError, setLoading, setUser, resetUser, resetError } = userSlice.actions
 
 export default userSlice.reducer

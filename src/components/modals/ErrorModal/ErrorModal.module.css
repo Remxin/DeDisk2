@@ -8,6 +8,7 @@
     top: 0;
     left: 0;
     background-color: #0007;
+    z-index: 1000;
 }
 
 .modal_content {

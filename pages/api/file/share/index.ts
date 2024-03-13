@@ -76,5 +76,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
            
             return res.status(500).send(ret)
         }
+    } else if (req.method === "DELETE") {
+        let ret: ReturnT<Share> = { status: "ok", message: "success", data: null } 
+        const { shareId } = JSON.parse(req.body) as { shareId: string }
+
+        try {
+            if (!shareId) {
+                ret = { status: "failed", message: "bad body", data: null}
+                return res.status(404).send(ret)
+            }
+            const cookies = await cookieValidations.verifyUser(req)
+            if (cookies.error) {
+                ret = { status: "failed", message: "user not authenticated", data: null}
+                return res.status(403).send(res)
+            }
+            const deleted = await prisma.share.delete({ where: { id: shareId }})
+            ret.data = deleted
+            return res.status(200).send(ret)
+
+        } catch (err) {
+            ret.status = "failed",
+            ret.message = "Internal server error"
+            return res.status(500).send(ret)
+        }
     }
 }

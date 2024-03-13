@@ -70,3 +70,11 @@
 .submit_button:hover {
     box-shadow: 0 0 3px black;
 }
+
+
+
+.error_modal_container p {
+    font-size: 26px;
+    text-align: center;
+    color: tomato;
+}

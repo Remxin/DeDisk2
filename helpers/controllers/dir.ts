@@ -30,7 +30,7 @@ export const dirControllers = {
         let pathName = getLastUrlPart(req.url)
         pathName = pathName.replaceAll("%7C", "/")
         const pathParts = pathName.split("/")
-        if (/\./.test(pathParts[pathParts.length -1])) return fileControllers.getFile(req, res, pathName)
+        if (/\./.test(pathParts[pathParts.length -1])) return fileControllers.getFile(req, res)
         if (token.error) return res.status(403).send(token.error)
 
         try {

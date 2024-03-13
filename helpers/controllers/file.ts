@@ -181,9 +181,5 @@ export const fileControllers = {
         }
 
         res.status(status).send(resultBody)
-    },
-
-    share: async (req: NextApiRequest, res: NextApiResponse) => {
-
     }
 }

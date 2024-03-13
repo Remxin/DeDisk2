@@ -9,11 +9,15 @@ import Modal from '@/src/components/modals/Modal/Modal'
 import Button from '@/src/components/forms/Button/Button'
 import FormInput from '@/src/components/forms/FormInput/FormInput'
 import FullScreenLoading from "@/src/components/modals/FullScreenLoading/FullScreenLoading"
-import Image from 'next/image'
+import ErrorModal from "@/src/components/modals/ErrorModal/ErrorModal"
+
+// lottie
+import Lottie from 'lottie-react'
+import LottieError from "@/public/lottie/error.json"
 
 // redux
 import { useDispatch, useSelector } from "react-redux"
-import { registerUser, loginUser } from '@/src/features/userSlice'
+import { registerUser, loginUser, resetError } from '@/src/features/userSlice'
 import { RootState } from '@/src/config/reduxStore'
 
 // validations
@@ -23,6 +27,7 @@ import { otherValidations } from '@/src/validations/other'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { appConstants } from '@/src/constants/appConstants'
+import { error } from 'console'
 
 const registerSchema = z.object({ 
     name: z.string().min(3, { message: "Name must contain at least 3 characters"}).refine(v => !otherValidations.swearRegex().test(v), { message: "Please do not use swears in your name"}),
@@ -60,6 +65,7 @@ const Login = () => {
     // other
     const dispatch = useDispatch()
     const userState = useSelector((state: RootState) => state.user)
+    console.log(userState)
 
 
     const RegisterForm = useMemo(() => (
@@ -101,6 +107,12 @@ const Login = () => {
                 {RegisterForm}
             </Modal>
             <FullScreenLoading visible={userState.loading} />
+            <ErrorModal visible={userState.error} setVisibleDispatch={resetError} size={{ width: 300, height: 500 }}>
+                <div className={loginStyles.error_modal_container}>
+                    <Lottie animationData={LottieError} loop={false}/>
+                    <p>{userState.error}</p>
+                </div>
+            </ErrorModal>
         </div>
     )
 }
