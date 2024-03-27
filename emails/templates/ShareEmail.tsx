@@ -28,8 +28,8 @@ export function ShareEmail({ sharerName, resourceName, token }: componentProps) 
                 <Container style={container}>
                     <Text style={paragraph}>Click the button to see the shared content</Text>
                     {/* @ts-ignore */}
-                    <Button style={button} target="_blank" href={`${appConstants.clientUrl}/drive?search=shared&token=${token}`}><Text style={buttonText}>See the content</Text></Button>
-                    <Text style={postScriptum}>*This button link is secret! To not share it with anyone</Text>
+                    <Button style={button} target="_blank" href={`${appConstants.clientUrl}/shared?token=${token}&path=/`}><Text style={buttonText}>See the content</Text></Button>
+                    <Text style={postScriptum}>*This button link is secret! Do not share it with anyone</Text>
                 </Container>
             </Section>
         </Html>
