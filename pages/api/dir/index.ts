@@ -24,9 +24,7 @@ type Body = {
     location: string
 }
 
-type Cookies = {
-    token: string
-}
+
 
 export default async function handler(
     req: NextApiRequest,

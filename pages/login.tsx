@@ -1,7 +1,5 @@
 import React, { useState, useRef, MutableRefObject, useMemo } from 'react'
 import Navbar from '@/src/layout/Navbar/Navbar'
-// router
-import { useRouter } from 'next/router'
 
 // styles
 import loginStyles from "../styles/Login.module.css"
@@ -9,24 +7,57 @@ import loginStyles from "../styles/Login.module.css"
 // components
 import Modal from '@/src/components/modals/Modal/Modal'
 import Button from '@/src/components/forms/Button/Button'
-import Input from '@/src/components/forms/Input/Input'
+import FormInput from '@/src/components/forms/FormInput/FormInput'
 import FullScreenLoading from "@/src/components/modals/FullScreenLoading/FullScreenLoading"
+import ErrorModal from "@/src/components/modals/ErrorModal/ErrorModal"
 
-// validations
-import { userValidations } from '@/src/validations/userData'
+// lottie
+import Lottie from 'lottie-react'
+import LottieError from "@/public/lottie/error.json"
 
 // redux
 import { useDispatch, useSelector } from "react-redux"
-import { registerUser, loginUser } from '@/src/features/userSlice'
+import { registerUser, loginUser, resetError } from '@/src/features/userSlice'
 import { RootState } from '@/src/config/reduxStore'
 
+// validations
+import { userValidations } from '@/src/validations/userData'
+import { z } from 'zod'
+import { otherValidations } from '@/src/validations/other'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { appConstants } from '@/src/constants/appConstants'
+import { error } from 'console'
+
+const registerSchema = z.object({ 
+    name: z.string().min(3, { message: "Name must contain at least 3 characters"}).refine(v => !otherValidations.swearRegex().test(v), { message: "Please do not use swears in your name"}),
+    email: z.string().email({message: "Please enter a valid email"}),
+    password: z.string().min(6, { message: "Password must contain at least 6 characters"}).refine(v => userValidations.passwordRegex().test(v), { message: "Password must consist of number, special sign and capital letter"})
+})
+
+const loginSchema = z.object({
+    email: z.string().email({message: "Please enter a valid email"}),
+    password: z.string().min(6, { message: "Password must contain at least 6 characters"}).refine(v => userValidations.passwordRegex().test(v), { message: "Password must consist of number, special sign and capital letter"})
+})
+
+type UserRegisterSchemaT = z.infer<typeof registerSchema>
+type UserLoginSchemaT = z.infer<typeof loginSchema>
+
+
 const Login = () => {
-
-    // refs
-    const nameRef = useRef() as MutableRefObject<HTMLInputElement>
-    const emailRef = useRef() as MutableRefObject<HTMLInputElement>
-    const passwordRef = useRef() as MutableRefObject<HTMLInputElement>
-
+    const { register: loginRegister, handleSubmit: handleLoginSubmit, formState: { errors: loginErrors }} = useForm<UserLoginSchemaT>({
+        resolver: zodResolver(loginSchema)
+    })
+    const { register: registerRegister, handleSubmit: handleRegisterSubmit, formState: { errors: registerErrors }} = useForm<UserRegisterSchemaT>({
+        resolver: zodResolver(registerSchema)
+    })
+    const onLoginSubmit: SubmitHandler<UserLoginSchemaT> = (data) => { //@ts-ignore
+        dispatch(loginUser({ email: data.email, password: data.password }))
+    }
+    const onRegisterSubmit: SubmitHandler<UserRegisterSchemaT> = (data) => { //@ts-ignore
+        dispatch(registerUser({ name: data.name, email: data.email, password: data.password }))
+    }
+    
     // modals
     const [showLogin, setShowLogin] = useState(false)
     const [showRegister, setShowRegister] = useState(false)
@@ -34,66 +65,54 @@ const Login = () => {
     // other
     const dispatch = useDispatch()
     const userState = useSelector((state: RootState) => state.user)
-
-    const { push } = useRouter()
-    if (userState.id) push("/")
+    console.log(userState)
 
 
     const RegisterForm = useMemo(() => (
-        <form>
-            <h2>Register</h2>
-            <Input ref={nameRef} placeholder='Name' validationFunction={userValidations.nick} />
-            <Input ref={emailRef} placeholder='Email' validationFunction={userValidations.email} parentError={userState.error} />
-            <Input ref={passwordRef} placeholder='Password' validationFunction={userValidations.password} secure={true} />
-            <Button text="SignUp" onClick={handleRegister} styles={{ marginTop: 10 }} />
+        <form onSubmit={handleRegisterSubmit(onRegisterSubmit)} className={loginStyles.modal_form}>
+            <img src="/images/logo.png" alt="logo" className={loginStyles.modal_logo}/>
+            <h2 className={loginStyles.modal_title}>Register</h2>
+            <FormInput register={registerRegister("name")} error={registerErrors.name?.message} placeholder='Name' id="name-register"/>
+            <FormInput register={registerRegister("email")} error={registerErrors.email?.message} placeholder='Email' id="email-register"/>
+            <FormInput register={registerRegister("password")} error={registerErrors.password?.message} placeholder='Password' type='password' id="password-register"/>
+            <button type="submit" className={loginStyles.submit_button}>Login</button>
         </form>
-    ), [userState.error])
+    ), [userState.error, registerErrors])
 
     const LoginForm = useMemo(() => (
-        <form>
-            <h2>Login</h2>
-            <Input ref={emailRef} placeholder='Email' validationFunction={userValidations.email} />
-            <Input ref={passwordRef} placeholder='Password' validationFunction={userValidations.password} secure={true} />
-            <Button text="Login" onClick={handleLogin} styles={{ marginTop: 10 }} />
+        <form onSubmit={handleLoginSubmit(onLoginSubmit)} className={loginStyles.modal_form}>
+            <img src="/images/logo.png" alt="logo" className={loginStyles.modal_logo}/>
+            <h2 className={loginStyles.modal_title}>Login</h2>
+            <FormInput register={loginRegister("email")} error={loginErrors.email?.message} placeholder='Email' id="email-login"/>
+            <FormInput register={loginRegister("password")} error={loginErrors.password?.message} placeholder='Password' type='password' id="password-login"/>
+            <button type="submit" className={loginStyles.submit_button}>Login</button>
+
         </form>
-    ), [userState.error])
-
-    async function handleRegister() {
-        const name = nameRef.current.value
-        const email = emailRef.current.value
-        const password = passwordRef.current.value
-
-        if (!name || !email || !password) return // TODO: Error handling
-
-        //@ts-ignore
-        dispatch(registerUser({ name, email, password }))
-
-    }
-
-    async function handleLogin() {
-        const email = emailRef.current.value
-        const password = passwordRef.current.value
-        if (!email || !password) return // TODO: Error handling
-        //@ts-ignore
-        dispatch(loginUser({ email, password }))
-    }
+    ), [userState.error, loginErrors])
 
 
     return (
         <div className={loginStyles.login_container}>
             <Navbar />
+            <img src="/images/logo.png" alt=""  className={loginStyles.login_logo}/>
             <img src="images/login-logo.svg" alt="login logo" className={loginStyles.backgroundImage} />
             <div className={loginStyles.buttons}>
                 <Button text="Login" onClick={() => setShowLogin(true)} />
                 <Button text="Register" onClick={() => setShowRegister(true)} />
             </div>
-            <Modal visible={showLogin} setVisible={setShowLogin}>
+            <Modal visible={showLogin} setVisible={setShowLogin} size={{ width: 300, height: 500 }}>
                 {LoginForm}
             </Modal>
-            <Modal visible={showRegister} setVisible={setShowRegister}>
+            <Modal visible={showRegister} setVisible={setShowRegister} size={{ width: 300, height: 500 }}>
                 {RegisterForm}
             </Modal>
             <FullScreenLoading visible={userState.loading} />
+            <ErrorModal visible={userState.error} setVisibleDispatch={resetError} size={{ width: 300, height: 500 }}>
+                <div className={loginStyles.error_modal_container}>
+                    <Lottie animationData={LottieError} loop={false}/>
+                    <p>{userState.error}</p>
+                </div>
+            </ErrorModal>
         </div>
     )
 }

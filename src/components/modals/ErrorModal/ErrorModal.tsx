@@ -1,7 +1,10 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-import modalStyles from "./Modal.module.css"
+
+import { useDispatch } from 'react-redux'
+
+import modalStyles from "./ErrorModal.module.css"
 
 const modalVariants = {
     initial: {
@@ -25,19 +28,26 @@ const modalContentVariants = {
 type componentProps = {
     children: JSX.Element | JSX.Element[],
     visible: boolean
-    setVisible: React.Dispatch<boolean>
+    size?: { width: number | string, height: number | string}
+    setVisible?: React.Dispatch<boolean>
+    setVisibleDispatch?: () => any
 }
 
-const Modal = ({ children, visible, setVisible }: componentProps) => {
-
+const Modal = ({ children, visible, size = { width: "80%", height: "80%" }, setVisible, setVisibleDispatch}: componentProps) => {
+    const dispatch = useDispatch()
     function handleVisibility(e: React.MouseEvent) {
-        if (e.currentTarget === e.target) setVisible(false)
+        if (e.currentTarget === e.target) {
+            if (setVisible) return setVisible(false)
+            if (setVisibleDispatch) {
+                dispatch(setVisibleDispatch())
+            } 
+        }
     }
     return (
         <AnimatePresence>
             {visible &&
-                <motion.div variants={modalVariants} className={modalStyles.modal} onClick={handleVisibility} initial="initial" animate="animate" exit="initial">
-                    <motion.div variants={modalContentVariants} className={modalStyles.modal_content} initial="initial" animate="animate" exit="initial">
+                <motion.div variants={modalVariants} className={modalStyles.modal} onClick={handleVisibility} initial="initial" animate="animate" exit="initial" >
+                    <motion.div variants={modalContentVariants} className={modalStyles.modal_content} initial="initial" animate="animate" exit="initial" style={{ width: size.width, height: size.height }}>
                         {children}
                     </motion.div>
                 </motion.div>

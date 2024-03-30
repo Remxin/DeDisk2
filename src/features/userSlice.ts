@@ -3,6 +3,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { appConstants } from "../constants/appConstants";
 
+// router
+import Router from "next/router";
+
+
+
 type userRegisterData = {
     name: string
     email: string
@@ -97,10 +102,43 @@ const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        resetLoadingData: (state, action) => {
-            state.error = ""
-            state.success = false
+        resetLoadingData: (state) => {
             state.loading = false
+        },
+        setLoading: (state) => {
+            state.loading = true
+        },
+        setError: (state, action: { payload: string }) => {
+            state.error = action.payload
+        },
+
+        resetError: (state) => {
+            console.log('reset')
+            state.error = ""
+            state.loading = false
+            state.success = true
+        },
+        resetUser: (state) => {
+            state = { ...initialState }
+        },
+
+        setUser: (state, action: { payload: Omit<userInitialType, "loading"> }) => {
+            state.id = action.payload.id
+            state.email = action.payload.email
+            state.name = action.payload.name
+            state.createDate = action.payload.createDate
+            state.plan = action.payload.plan
+            state.usedSpace = action.payload.usedSpace
+            state.error = action.payload.error
+            state.success = action.payload.success
+        },
+        logout: (state) => {
+            (async () => {
+                const res = await fetch(`${appConstants.serverUrl}/api/user/logout`, { method: "POST"})
+                if (res.status !== 200) return
+                Router.push("/login")
+                window.location.reload()
+            })()
         }
     },
     extraReducers: (builder) => {
@@ -119,6 +157,7 @@ const userSlice = createSlice({
             state.email = payload.email
             state.plan = payload.plan
             state.usedSpace = payload.usedSpace
+            Router.push("/")
         })
 
         builder.addCase(registerUser.rejected, (state, { payload }) => {
@@ -140,6 +179,7 @@ const userSlice = createSlice({
             state.email = payload.email
             state.plan = payload.plan
             state.usedSpace = payload.usedSpace
+            Router.push("/")
         })
 
         builder.addCase(loginUser.rejected, (state, { payload }) => {
@@ -150,6 +190,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { resetLoadingData } = userSlice.actions
+export const { resetLoadingData, logout, setError, setLoading, setUser, resetUser, resetError } = userSlice.actions
 
 export default userSlice.reducer

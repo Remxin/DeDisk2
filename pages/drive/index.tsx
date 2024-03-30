@@ -58,9 +58,6 @@ export async function getServerSideProps(context: any) {
       },
     }
   }
-    // functionality
-    //@ts-ignore
-    const { params } = context
 
     const search = context.query?.search ? context.query.search : null
     const path = context.query?.path ? context.query.path : null

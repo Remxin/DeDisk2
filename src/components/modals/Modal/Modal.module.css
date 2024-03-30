@@ -8,6 +8,7 @@
     top: 0;
     left: 0;
     background-color: #0007;
+    z-index: 100;
 }
 
 .modal_content {
@@ -16,7 +17,7 @@
     flex-direction: column;
     position: relative;
     padding: 20px;
-    background-color: #ddddee;
+    background-color: #fdfdff;
     border-radius: 10px;
     box-shadow: 0 0 10px 1px black;
 }

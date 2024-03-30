@@ -5,7 +5,7 @@ Content-Type: application/json
 {
     "name": "Dawid",
     "email": "remxin7@gmail.com",
-    "password": "zaq1@WSX"
+    "password": ""
 }
 
 ### POST
@@ -13,7 +13,7 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-    "email": "remxin7@gmail.com",
+    "email": "remxin8@gmail.com",
     "password": "zaq1@WSX"
 }
 

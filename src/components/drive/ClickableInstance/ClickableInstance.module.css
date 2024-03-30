@@ -56,3 +56,24 @@
     text-align: right;
     color: #787878;
 }
+
+.shared_modal {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #23232366;
+    z-index: 100;
+}
+
+.shared_modal div {
+    width: 300px;
+    height: 300px;
+    background-color: #fefefe;
+    border-radius: 5px;
+    padding: 10px;
+}

@@ -3,6 +3,7 @@ import { cookieValidations } from "../validation/cookieValidations";
 import prisma from "@/lib/prisma";
 import { createUserDir, listDir } from "../fs/dir";
 import { getLastUrlPart } from "../data/links";
+import { fileControllers } from "./file";
 
 export const dirControllers = {
     createDir: async (req: NextApiRequest, res: NextApiResponse) => {
@@ -28,12 +29,12 @@ export const dirControllers = {
         
         let pathName = getLastUrlPart(req.url)
         pathName = pathName.replaceAll("%7C", "/")
-        console.log(pathName)
+        const pathParts = pathName.split("/")
+        if (/\./.test(pathParts[pathParts.length -1])) return fileControllers.getFile(req, res)
         if (token.error) return res.status(403).send(token.error)
 
         try {
             const dirList = await listDir(token.data.id, pathName)
-            console.log(dirList)
             return res.send({ data: dirList})
         } catch (err) {
             return res.status(500).send({ error: { server: "Unknown server error" } })

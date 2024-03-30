@@ -49,7 +49,6 @@ export function renameFile(location: string, name: string, newName: string, user
 
     const originalPath = path.join("serverFiles", "folders", userId, name)
     const newPath = path.join("serverFiles", "folders", userId, newName)
-    console.log(originalPath, newPath)
 
     return new Promise((resolve, reject) => {
                
@@ -89,7 +88,6 @@ export function getFileInfo(absolutePath: string, userId: string) {
     return new Promise((resolve, reject) => {
         try {
             const extension = path.extname(finalPath)
-            console.log(finalPath, extension, pathParts)
             let data = { ...fs.statSync(finalPath), name: fileName, extension }
         
             resolve(data)

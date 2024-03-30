@@ -1,0 +1,47 @@
+.overlapping_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+    z-index: 2;
+    animation-name: enter-animation;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+}
+
+.overlapping_div p {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+}
+
+.overlapping_div button {
+    margin-top: 20px;
+    width: 150px;
+    height: 40px;
+    background-color: purple;
+    color: #fff;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.error_text {
+    color: tomato;
+}
+
+@keyframes enter-animation {
+    0% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: .9;
+    }
+}

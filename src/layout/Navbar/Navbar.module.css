@@ -27,6 +27,49 @@
     background-color: #34077bcc;
 }
 
+.user_icon_container {
+    position: relative;
+    width: 50px;
+    margin-left: 10px;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    opacity: .9;
+
+   
+}
+
+
+.user_icon {
+    position: relative;
+    display: block;
+    border-radius: 50%;
+    width: 100%;
+
+    box-shadow: 0 0 2px black;
+}
+
+.user_menu {
+    position: absolute;
+    bottom: -50px;
+    height: 50px;
+    width: 120px;
+    background-color: #fefefe;
+    border-radius: 2px;
+    transform: translateX(-10px);
+    opacity: 1;
+}
+
+.user_menu li {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    padding-left: 5px;
+    font-weight: bold;
+}
+.user_menu li svg {
+    margin-right: 5px;
+}
+
 /* .mobile_nav li {
     width: 100px;
     text-align: center;

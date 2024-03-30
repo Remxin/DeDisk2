@@ -4,8 +4,6 @@ import React, { useContext, useState,useEffect, MutableRefObject, useRef } from 
 import { getFileIcon } from '../FolderContent/helpers'
 import { BiSolidFolder } from 'react-icons/bi'
 
-// components
-import ContextMenuModal from '../ContextMenuModal/ContextMenuModal'
 
 // styles
 import styles from "./ClickableInstance.module.css"
@@ -36,7 +34,6 @@ const ClickableInstance = ({ name, type, handleRightClick, edit, handleInputBlur
 
   // for navigation
   const moveUrl = getRedirectUrl(data.data.currentFolder, name)
-  // console.log(moveUrl, data.data.currentFolder)
 
   useEffect(() => {
     if (!inputRef.current) return

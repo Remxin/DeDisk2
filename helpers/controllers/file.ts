@@ -3,6 +3,9 @@ import { readFile, renameFile, deleteFile, getFileInfo, addToFavourites, removeF
 import { cookieValidations } from "../validation/cookieValidations";
 import { getLastUrlPart, getUrlPartFromEnd } from "../data/links";
 import prisma from "@/lib/prisma";
+import fs from "fs"
+import path from "path";
+import { fileURLToPath } from "url";
 
 
 
@@ -25,7 +28,6 @@ export const fileControllers = {
         try {
             const file: any = await readFile(req, true, cookies.data.id)
             let filesNames = []
-            console.log(file)
 
             for (let i = 0; i < Object.keys(file.files).length; i++) {
                 const fileData = file.files['File' + i][0]
@@ -78,11 +80,10 @@ export const fileControllers = {
             resultBody.data = name
 
         } catch (err) {
-            console.log(err)
+
             status = 500
             resultBody = { status: "fail", message: "Something went wrong", data: null}
         } 
-        console.log(resultBody)
         res.status(status).send(resultBody)
     },
 
@@ -97,7 +98,7 @@ export const fileControllers = {
         
         try {
             const info = await getFileInfo(replacedPath, cookies.data.id)
-            console.log(info)
+
             resultBody.data = info
 
         } catch (err) {
@@ -105,6 +106,21 @@ export const fileControllers = {
             resultBody = { status: "fail", message: "Something went wrong", data: null}
         } 
         res.status(status).send(resultBody)
+    },
+
+    getFile: async(req: NextApiRequest, res: NextApiResponse) => {
+        const filePath = req.query.url as string 
+        if (!filePath) return res.status(404).send({ err: "File does not exist"})
+        try {
+            const userId = cookieValidations.verifyUser(req).data?.id
+            if (!userId) return res.status(403).send({ err: "User not authenticated"})
+            req.headers["content-type"] = "image/jpg"
+            const file = fs.readFileSync(path.join("serverFiles", "folders", userId ,...filePath.split("/")))
+            return res.status(200).send(file)
+
+        } catch (err) {
+            return res.status(400).send({ err: "File does not exist"})
+        }
     },
 
     getFavourites: async (req: NextApiRequest, res: NextApiResponse) => {
@@ -165,9 +181,5 @@ export const fileControllers = {
         }
 
         res.status(status).send(resultBody)
-    },
-
-    share: async (req: NextApiRequest, res: NextApiResponse) => {
-
     }
 }

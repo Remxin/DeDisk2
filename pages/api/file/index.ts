@@ -35,5 +35,6 @@ export default async function handler(
     res: NextApiResponse
 ) {
     if (req.method === "POST") return fileControllers.sendFiles(req, res)
+    else if (req.method === "GET") return fileControllers.getFile(req, res)
 
 }

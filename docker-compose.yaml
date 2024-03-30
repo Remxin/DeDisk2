@@ -1,0 +1,25 @@
+version: "0.1"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dedisk2
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/dev/src/app
+      # - /src/app/node_modules
+  
+  mysql:
+    image: "mysql:latest"
+    ports:
+      - "3306:3306"
+    container_name: mysql_for_dedisk2
+    environment:
+      MYSQL_DATABASE: dedisk2
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+

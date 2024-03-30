@@ -16,7 +16,7 @@ model User {
   email      String   @unique
   name       String
   password   String
-  plan       String   @default("15_GB")
+  plan       String   @default("0_GB")
   usedSpace  String   @default("0_B")
   createDate DateTime @default(now())
   shares     Share[]
@@ -30,14 +30,17 @@ model Favourite {
   path    String
   date    DateTime  @default(now())
   userId  String
-  user    User @relation(fields: [userId], references: [id])
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade) 
 }
 
 model Share {
   id     String @id @default(uuid())
   userId String
-  user   User   @relation(fields: [userId], references: [id])
-  token  String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token  String @db.LongText
+  sharedSource  String
+  sharedTo  String // user email tab stringified
+  createData  DateTime  @default(now())
 }
 
-// ____ ENUMS ____
+

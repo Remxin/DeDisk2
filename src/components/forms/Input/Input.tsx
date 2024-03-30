@@ -8,12 +8,13 @@ type componentProps = {
     // inputStyle?: React.CSSProperties,
     placeholder?: string,
     parentError?: string,
+    onChange?: () => any
     setParentError?: Dispatch<string>
     validationFunction?: (text: string) => string,
     secure?: boolean,
 }
 
-const Input = React.forwardRef<HTMLInputElement, componentProps>(({ parentError = "", placeholder = "", validationFunction, setParentError, secure }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, componentProps>(({ parentError = "", placeholder = "", validationFunction, setParentError, secure, onChange = () => null }, ref) => {
     const [error, setError] = useState(parentError)
     const [success, setSuccess] = useState(false)
     const [active, setActive] = useState(false)
@@ -56,7 +57,7 @@ const Input = React.forwardRef<HTMLInputElement, componentProps>(({ parentError 
     return (
         <div className={inputStyles.input_container} style={{ marginBottom: error ? 42 : 0 }}>
             {active ? <p className={inputStyles.active_placeholder_text}>{placeholder}</p> : null}
-            <input className={inputStyles.input} ref={ref} placeholder={placeholder} onBlur={handleBlur} onInput={handleInput} style={{ borderColor: behaviorColor }} type={secure ? "password" : "text"} />
+            <input className={inputStyles.input} ref={ref} placeholder={placeholder} onBlur={handleBlur} onInput={handleInput} style={{ borderColor: behaviorColor }} type={secure ? "password" : "text"} onChange={onChange} />
             {error ? <p className={inputStyles.error_text}>{error}</p> : null}
         </div>
     )

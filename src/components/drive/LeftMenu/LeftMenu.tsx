@@ -43,6 +43,8 @@ const RightMenu = () => {
     const [showNew, setShowNew] = useState(false)
     const [showChoosePlan, setShowChoosePlan] = useState(false)
 
+
+
     function manageSize() {
         if (extended) {
             setExtended(false)
@@ -73,7 +75,7 @@ const RightMenu = () => {
                     <motion.div variants={optionsListVariants} initial="initial" animate="animate" className={styles.options_container}>
                         <Link href={`${appConstants.clientUrl}/drive`}><motion.button style={{ backgroundColor: selected === "" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => null}><BiSolidStar/>My drive</motion.button></Link>
                         <Link href={`${appConstants.clientUrl}/drive?search=favourites`}><motion.button style={{ backgroundColor: selected === "favourites" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => null}><BsFillHeartFill/>Favourites</motion.button></Link>
-                        <Link href={`${appConstants.clientUrl}/drive?search=shared`}><motion.button style={{ backgroundColor: selected === "shared" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => null}><BiSolidShareAlt/>Shared to me</motion.button></Link>
+                        <Link href={`${appConstants.clientUrl}/drive?search=shared`}><motion.button style={{ backgroundColor: selected === "shared" ? "#C996CC" : "#C996CC88" }} variants={optionVariants} onClick={() => null}><BiSolidShareAlt/>Shared</motion.button></Link>
                     </motion.div>
                     <FreeSpace plan="15_GB" usedSpace='5_GB' />
                     <motion.div variants={buttonVariants} initial="initial" animate="animate">
