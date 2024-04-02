@@ -22,7 +22,8 @@ const SharedDriveContext = createContext<null | SharedDriveContextT>(null)
 export const SharedDriveContextProvider = ({ children }: ContextProviderT) => {
     const [content, setContent] = useState<SharedDriveContentT[]>([])
     const searchParams = useSearchParams()
-    const path = searchParams.get("path") || "/" as string
+    let path = searchParams.get("path") || "/" as string
+    path = path.replaceAll("%2F", "/")
     const token = searchParams.get("token") || ""
     return (
         <SharedDriveContext.Provider value={{ content, path, token, setContent }}>

@@ -3,12 +3,16 @@
     width: 100%;
 }
 .path_container {
-    display: block;
+
     width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    /* text-align: center; */
 }
 
+
 .path_part {
+    display: block;
     font-size: 24px;
     cursor: pointer;
 }

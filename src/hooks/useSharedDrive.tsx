@@ -7,7 +7,8 @@ const useSharedDrive = () => {
     const context = useSharedDriveContext()
 
     async function moveToPath(newPath: string) {
-        const res = await fetch(`${appConstants.serverUrl}/api/shared?token=${context.token}&path=${context.path}`)
+        newPath = newPath.replaceAll("/", "%2F")
+        const res = await fetch(`${appConstants.serverUrl}/api/shared?token=${context.token}&path=${newPath}`)
         const resData = await res.json()
         context.setContent(resData.data)
     }
@@ -15,7 +16,9 @@ const useSharedDrive = () => {
     useEffect(() => {
         if (!context.token || !context.path) return
         moveToPath(context.path)
-    }, [context.token])
+    }, [context.path, context.token])
+
+    console.log(context)
 
     return { ...context, moveToPath }
 }

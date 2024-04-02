@@ -15,8 +15,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).send(ret)
     }
 
-    const { token, path } = req.query
-    
+    let { token, path } = req.query as { token: string, path: string}
+    path = path.replaceAll("%2F", "/")
+    console.log(path)
+    // path[-1] === "%2F" ? path.slice(0,-1) : null
+    // console.log(path)
     
     const tokenData = cookieValidations.verifyShare(req)
     if (!token || !path || tokenData.error) {
@@ -26,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     const { userId, filepath} = tokenData.data!
     const dirData = await listDir(userId, `${filepath}/${path}`)
-
     ret.data = dirData
     return res.status(200).send(ret)
 
