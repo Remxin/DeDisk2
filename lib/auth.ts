@@ -19,7 +19,6 @@ export const verifyAuth = async (token: string) => {
         return verified.payload as UserJwtPayload
       
     } catch (err) {
-        console.log(err)
         throw new Error("Your token has expired")
     }
 }

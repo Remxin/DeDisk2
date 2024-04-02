@@ -58,7 +58,6 @@ try {
         res.setHeader("Set-Cookie", cookie)
         return res.status(200).send({ user: { name: user.name, email, id: user.id, plan: user.plan, usedSpace: user.usedSpace } })
     } catch (err) {
-        console.log(err)
         return res.status(500).send({ error: { server: "Unexpected server error" } })
     }
 }

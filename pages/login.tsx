@@ -65,8 +65,6 @@ const Login = () => {
     // other
     const dispatch = useDispatch()
     const userState = useSelector((state: RootState) => state.user)
-    console.log(userState)
-
 
     const RegisterForm = useMemo(() => (
         <form onSubmit={handleRegisterSubmit(onRegisterSubmit)} className={loginStyles.modal_form}>

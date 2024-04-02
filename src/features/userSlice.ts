@@ -113,7 +113,6 @@ const userSlice = createSlice({
         },
 
         resetError: (state) => {
-            console.log('reset')
             state.error = ""
             state.loading = false
             state.success = true
@@ -149,7 +148,6 @@ const userSlice = createSlice({
         })
 
         builder.addCase(registerUser.fulfilled, (state, { payload }) => {
-            console.log(payload)
             state.loading = false
             state.success = true
             state.id = payload.id

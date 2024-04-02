@@ -14,10 +14,10 @@ export const cookieValidations = {
     verifyShare: (req: NextApiRequest) => {
         const token = req.query["token"] as string
         if (!token) return { error: "token not provided" }
-        const { id } = verifyToken(token, "share") as { id: string }
-        if (!id) return { error: "User not verified" }
+        const { filepath, userId } = verifyToken(token, "share") as { filepath: string, userId: string }
+        if (!filepath || !userId) return { error: "bad token" }
 
-        return { data: { id }}
+        return { data: { filepath, userId }}
 
     }
 

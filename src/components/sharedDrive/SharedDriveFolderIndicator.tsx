@@ -3,28 +3,30 @@ import styles from "./SharedDriveFolderIndicator.module.css"
 
 import { useRouter } from 'next/router'
 import { useSearchParams } from 'next/navigation'
+import { useSharedDriveContext } from '@/src/contexts/ShareDriveContext'
+import useSharedDrive from '@/src/hooks/useSharedDrive'
 
 
 
 const SharedDriveFolderIndicator = () => {
-    const router = useRouter()
-    const searchParams= useSearchParams()
-    const path = searchParams.get("path")
+   const context = useSharedDrive()
+  
+
 
 
     useEffect(() => {
-        if (!path) router.push("/login")
     }, [])
     
+   const path = context.path
 
 
  return (
    <div className={styles.container}>
-     <span>
-        {/* { path.length > 1 ? 
+     <span className={styles.path_container}>
+        { path.length > 1 ? 
           path.split("/").map((e, i) => (
-            <span key={i} onClick={() => handleOnClick(e, i)} className={styles.path_part}>{e}/</span>
-        )) : <span onClick={() => handleOnClick("/", 0)} className={styles.path_part}>{path}</span>} */}
+            <span key={i} onClick={() => context.moveToPath(e)} className={styles.path_part}>{e}/</span>
+        )) : <span onClick={() => context.moveToPath("/")} className={styles.path_part}>{path}</span>}
      </span>
    </div>
  )

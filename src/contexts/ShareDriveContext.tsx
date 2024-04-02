@@ -1,9 +1,15 @@
-import { createContext, useContext} from "react"
+import { createContext, useContext, useState, Dispatch } from "react"
+import { useSearchParams } from 'next/navigation'
+
+type SharedDriveContentT = {
+    name: string
+    type: "folder" | "file"
+}
 type SharedDriveContextT = {
-    content: {
-        name: string
-        type: "folder" | "file"
-    }[]
+    path: string
+    token: string
+    content: SharedDriveContentT[],
+    setContent: Dispatch<SharedDriveContentT[]>
 }
 
 type ContextProviderT = {
@@ -14,9 +20,12 @@ type ContextProviderT = {
 const SharedDriveContext = createContext<null | SharedDriveContextT>(null)
 
 export const SharedDriveContextProvider = ({ children }: ContextProviderT) => {
-    const context = useContext(SharedDriveContext)
+    const [content, setContent] = useState<SharedDriveContentT[]>([])
+    const searchParams = useSearchParams()
+    const path = searchParams.get("path") || "/" as string
+    const token = searchParams.get("token") || ""
     return (
-        <SharedDriveContext.Provider value={context}>
+        <SharedDriveContext.Provider value={{ content, path, token, setContent }}>
             {children}
         </SharedDriveContext.Provider>
     )
@@ -27,5 +36,6 @@ export const useSharedDriveContext = () => {
     const context = useContext(SharedDriveContext)
     if (!context) throw new Error("Context should be used within parent component")
 
+    
     return context
 }
