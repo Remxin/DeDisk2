@@ -1,0 +1,22 @@
+.container {
+    position: relative;
+    width: 100%;
+}
+.path_container {
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* text-align: center; */
+}
+
+
+.path_part {
+    display: block;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.path_part:hover {
+    font-weight: bold;
+}

@@ -1,0 +1,18 @@
+.instance_container {
+    flex: 1;
+}
+
+.instance {
+    width: 100%;
+    background-color: #eef;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.instance p {
+    width: 100%;
+    padding-left: 10px;
+}

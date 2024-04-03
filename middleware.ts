@@ -17,7 +17,6 @@ async function loginMiddleware(req: NextRequest) {
 }
 
 export async function middleware(req: NextRequest) {
-
     if (/.*\/login/g.test(req.url)) return loginMiddleware(req)
     const userToken = req.cookies.get("userToken")?.value
     const verifiedToken = userToken && (await verifyAuth(userToken).catch((err) => {
@@ -30,5 +29,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/((?!api/user/register|register|shared|images|lottie|api/user/login|favicon.ico|static|_next|public).*)"]
+    matcher: ["/((?!api/user/register|register|shared|api/shared|images|lottie|api/user/login|favicon.ico|static|_next|public).*)"]
 }

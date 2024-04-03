@@ -69,7 +69,6 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
         body: JSON.stringify({ emails: shareData.targetUsers, expiresIn: shareData.expires, filepath: `${searchParams.get("path")}/${targetName}`}) // email, expiresIn, filepath
       })
       if (res.status !== 200) {
-        console.log("failed")
         // throw new Error((await res.json()).error)
         // error handling
         return
@@ -85,7 +84,6 @@ const ShareModal = ({visible, setVisible, targetName}: componentsProps) => {
   function handleSelect(e: ChangeEvent<HTMLSelectElement>) {
     const val = e.currentTarget.value as typeof shareTimes[number]["value"]
     if (val) setShareData(p => ({ ...p, expires: val }))
-    else console.log(val)
   }
 
   function handleInputInput() {
